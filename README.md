@@ -1,4 +1,4 @@
-![Rocket Ministry, PC version](https://github.com/user-attachments/assets/359692f9-e2e7-4384-a56a-a70c1edc25ad)
+![Rocket Ministry](https://github.com/user-attachments/assets/6e52cc38-6c90-4283-851e-ee3b6d0c56e6)
 
 Home of Rocket Ministry, the only cross-platform ministry app in the world.
 
