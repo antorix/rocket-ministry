@@ -2361,6 +2361,7 @@ class ScrollButton(Button):
         self.padding = padding if padding is not None else [RM.padding * 5, 0]
         self.spacing = spacing if spacing is not None else RM.spacing
         self.markup = True
+        self.size_hint_x = 1 if RM.orientation == "v" else .5
         self.size_hint_y = size_hint_y
         self.footers = []
         self.pos_hint = {"center_x": .5}
@@ -3652,7 +3653,8 @@ class RMApp(App):
             if self.createFirstHouse:
                 self.createFirstHouse = False
                 self.floaterBox.clear_widgets()
-                box1 = BoxLayout(orientation="vertical", size_hint_y=None, height=self.height1*1.05)
+                box1 = BoxLayout(orientation="vertical", size_hint_y=None,# size_hint_x=.5,
+                                 height=self.height1*1.05)
                 self.scrollRadius = [rad,]
                 box1.add_widget(ScrollButton(id=None, height=box1.height,
                                              text=f"{RM.button['porch_inv']} {RM.msg[12]}"))
@@ -3783,7 +3785,8 @@ class RMApp(App):
                             box = GridLayoutPositioned(position=i, rows=1, cols=2, height=height,
                                                        size_hint_y=None)
                         else:
-                            box = BoxLayout(orientation="vertical", height=height, size_hint_y=None)
+                            box = BoxLayout(orientation="vertical", height=height, #size_hint_x=.5,
+                                            size_hint_y=None)
 
                         if form == "porchView":
                             if not "." in label.number or self.house.type == "private":
