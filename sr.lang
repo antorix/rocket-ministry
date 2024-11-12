@@ -2,12 +2,12 @@ srpski
 Područja
 Kontakti
 Izveštaj
-Sačuvaj
+Časopis
 Kreiraj ulaz
 Da li ste Vi pionir? Onda upisaćemo kvotu sati u podešavanjima. Vi možete nju da promenite.
 Ništa nije pronađeno
 Greška baze podataka
-Dnevnik izveštaja
+Časopis služenja
 Dodajte
 Dodajte jedan ili više kuća
 Pritisnite %s da biste vratili ulaznu mrežu u prvobitni položaj.
@@ -46,14 +46,14 @@ Vratiti rezervnu kopiju od %s?
 Greška u nekim poljima, proverite podatke!
 volonterski sati: %s
 Nije potrebna podela na ulice
-Službena god.
+Kalkulator pionira
 da
 Tip
 Podešavanja
-Podešavanja su sačuvana
+Ograničenje zapisa časopisa
 Podaci
-Beležnik
-Podaci su sačuvani, rezervna kopija je kreirana.
+Dodaj
+Dodaj
 Kuća
 Stanova:
 od
@@ -142,16 +142,16 @@ Rocket Ministry za Windows i Linux, dokumentacija i izvorni kod:
 Pitanja i podrška korisnika:
 Nazad na vrh
 Pomoć
-Upišite dodatne informacije
+Sačuvaj
 Pretraga ljudi
 Unesi ime, adresu ili neku drugu informaciju o osobi:
 Pretraži
 Nema rezultata
-Potraga po "%s"
+Pretraga:
 Rezultati:
 Ovo područje je uzeto pre više od 4 meseca! Treba da ga vratite ili produžite tako što ćete ažurirati datum u detaljima.
 Izvezi područje
-Izvezi brojeve telefona
+Izvezi telefona
 Stanovi
 Dodaj kuće
 ulaz
@@ -185,7 +185,7 @@ Vreme propovedi je počelo! Da biste završili sesiju propovedi, samo ponovo dod
 Lista brojeva
 Nalepi iz privremene memorije
 Ovde možete dodati nove brojeve koristeći listu brojevu odvojenu zarezima ili novim redovima.
-Dodaj
+Ograničenje visine zapisa posete
 Najviše %s karaktera!
 Otkaži
 Lista
@@ -199,14 +199,14 @@ Da li ste sigurni?
 Izbriši
 Izbriši beleške o posetama
 Izbriši beleške od
-U zagradama možete videti koliko vremena ste ispred (+) ili zaostajete (-) za mesečnom potrebom za tekućim danom u mesecu. Na primer, sa zahtevom od 50 sati, ako danas niste imali propoved, ta vrednost će se sutra smanjiti za oko 1:40.
+Možete videti koliko vremena ste ispred (+) ili zaostajete (-) za mesečnom potrebom za tekućim danom u mesecu. Na primer, sa zahtevom od 50 sati, ako danas niste imali propoved, ta vrednost će se sutra smanjiti za oko 1:40.
 Pažnja
 Info
 "%s" jednim klikom
 Nema kući
 Nezainteresovan
 Nije moguće učitati datoteku. Najverovatnije je u pogrešnom formatu ili ne sadrži potrebne podatke.
-Data successfully loaded!
+Ubrzano učitavanje teritorija i kontakata
 Molimo sačekajte
 ulica
 ulaz
@@ -223,10 +223,10 @@ volonterski sati
 Izveštaj za %s:
 Primedba
 Pokrenut tajmer
-Tajmer je zaustavljen, dodan [b]%s[/b] s.
-Tajmer je zaustavljen, dodan [b]%s[/b] s. VS
+Dodato po tajmeru: [b]%s[/b] s.
+Dodato na tajmeru: [b]%s[/b] VS
 Sada ste na ekranu prvog poziva. Pojavljuje se samo kada prvi put posetite osobu.
-Ažuriranje ulaznih parametara?
+Ažurirati ulaz ponovnim kreiranjem svih stanova u zadanom opsegu? Svi zapisi u stanovima će biti sačuvani.
 Datum poslednje posete
 Stambena#zgrada
 Privatne#kuće
@@ -237,17 +237,17 @@ Kopiraj
 Zalepi
 Izaberi sve
 Stranica ima nespremljene promene! Nastavite bez čuvanja?
-Ovde ćete pronaći istoriju svih ažuriranja izveštaja (max. %pregleda).
+Ovde ćete pronaći istoriju svih ažuriranja izveštaja (max. %pregleda). Ovde možete kreirati i svoje unose. Jedan unos može biti zakačen na vrhu liste.
 Površina stana u podovima
 Baza podataka je izbrisana!
-Ne mogu da pristupim datoteci. Veza verovatno nije dobila prava javnog pristupa.
-Preuzimanje datoteke podataka nije uspelo. Najverovatnije je oštećen ili ima pogrešan format.
 Dodajte listu domaćinstava odvojenih zarezima ili prelomima linija.
-Učitavanje baze podataka
+Preuzimanje datoteke podataka nije uspelo. Najverovatnije je oštećen ili ima pogrešan format.
+Izvezi u#Google Drive
+Izvezi u oblak ([u]samo[/u] Google Drive, OneDrive, Dropbox i slične usluge)
 Savet
 Nije moguće napraviti rezervnu kopiju!
 Dodajte brojeve ručno
-Brojevi stanova moraju početi sa cifrom od najmanje 1! Počevši od drugog znaka, mogu se koristiti slova.
+Obriši sadržaj beleške trajno?
 Podaci Rocket Ministry
 Podaci se uspešno izvoze u datoteku %s.
 Podaci se uspešno izvoze u fasciklu Documents (Dokumenti) na vašem uređaju.
@@ -307,8 +307,8 @@ Sepija
 Dodavanje adresa kao liste
 Izvoz nije izvršen! Naziv teritorije može sadržati nevažeće znakove.
 1, 2a, Obalska 4a-15, Vuka Karadžića 12-23
-Pronađena nova verzija! Biće ažuriran sledeći put kada pokrenete program.
-Promena soba i podova ne utiče na postojeće podatke o posetama.
+Uneto ručno: [b]%s[/b] sati
+Uneto ručno: [b]%s[/b] VS
 Pritisnite %s da biste dodali stanove na ulaz:
 Na ovoj teritoriji nema telefonskih brojeva za izvoz!
 Telefonski brojevi na %s
@@ -318,8 +318,8 @@ Učitajte podatke u aplikaciju
 Sačuvajte sve podatke aplikacije u datoteku
 Vratite rezervnu kopiju ako nešto pođe po zlu
 Potpuno resetovanje svih podataka programa i postavki, uključujući rezervne kopije
-[b]%s[/b] s. dodato
-[b]%s[/b] s. VS dodato
+Dodato ručno: [b]%s[/b] sati
+Dodato ručno: [b]%s[/b] VS
 Pretraga radi na svim poljima za sve stanove i kontakte.
 Pauza#
 Završetak#usluge
@@ -329,7 +329,11 @@ Tajmer je ponovo pokrenut
 Opis
 Oznaka je bilo koji text na kraju unosa u dnevnik. Može se uneti kada je tajmer isključen ili direktno u dnevnik.
 Novi unos
-Novi unos u dnevnik
+Beleška je premeštena u novi odeljak [b]%s[/b] kao zakačeni unos!
 Text oznake
-Možete da kreirate unos u dnevnik kao datum i vreme sa jednom oznakom. Datum i vreme se automatski unose. Ako želite, takav unos se može u potpunosti izbrisati (uobičajeni unosi u dnevnik se ne brišu).
+Ovo je stari unos: ako ga otkačite, uskoro će nestati jer će biti van dometa dnevnika. Otkaciti?
 Samo sa oznakama
+Izvezi u oblak kada se tajmer zaustavi
+Pronađena nova verzija! Biće ažuriran sledeći put kada pokrenete program.
+Ikona umesto obojenih krugova pri prvom pozivu
+Jednostavan font tajmera

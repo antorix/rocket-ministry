@@ -2,12 +2,12 @@ español
 Territorios
 Contactos
 Informe
-Guardar
+Diario
 Agregar entrada
 ¿Eres precursor? Estableceremos el requisito de horas mensuales en los ajustes. Puedes cambiarlo manualmente
 No se ha encontrado nada
 Error en la base de datos
-Informe de servicio
+Diario de servicio
 Agregar
 Agregar casa(s)
 Presione %s para devolver la imagen de entrada a su posición original.
@@ -46,14 +46,14 @@ Recuperación de datos
 Error en algunos de los campos, ¡por favor, compruebe los datos!
 crédito: %s
 No dividir en calles
-Año de Serv.
+Calculadora de precursor
 si
 Tipo
 Ajustes
-Ajustes guardados
+Límite de registros del diario
 Datos
-Notas
-Datos guardados, copia de seguridad creada.
+Agregar
+Agregar
 Casa
 Apartamentos:
 de
@@ -142,15 +142,15 @@ Rocket Ministry para Windows y Linux, documentación, código fuente:
 Preguntas, soporte al usuario:
 Volver arriba
 Ayuda
-Cualquier información de forma gratuita
+Guardar
 Buscar contactos
 Introduzca el nombre, la dirección o cualquier otra información sobre una persona:
 Encontrar
 No se encontró nada
-búsqueda por ''%s''
+Búsqueda:
 Resultados:
 ¡Este territorio fue tomado hace más de 4 meses! Es necesario volver atrás o prolongar mediante la actualización de la fecha en los detalles.
-Exportar el territorio
+Exportar territorio
 Exportar teléfonos
 Apartamentos
 Agregar casas
@@ -185,7 +185,7 @@ El tiempo de servicio ha comenzado. Para finalizar su sesión de servicio, sólo
 Lista de números
 Pegar desde el portapapeles
 Aquí puede añadir nuevos números utilizando una lista de números separados por comas o saltos de línea.
-Agregar
+Limitar la altura de la grabación de asistencia
 Máximo de %s caracteres!
 Cancelar
 Lista
@@ -199,14 +199,14 @@ Borrar calle
 Borrar
 Borrar registro de visita
 Borrar registro desde
-Entre paréntesis, puede ver cuánto tiempo lleva de adelanto (+) o de retraso (-) con respecto a su requisito mensual para el día actual del mes. Por ejemplo, con el requisito de 50 horas, si no ha tenido servicio durante el día de hoy, este valor disminuirá aproximadamente a las 1:40 de mañana.
+Puede ver cuánto tiempo lleva de adelanto (+) o de retraso (-) con respecto a su requisito mensual para el día actual del mes. Por ejemplo, con el requisito de 50 horas, si no ha tenido servicio durante el día de hoy, este valor disminuirá aproximadamente a las 1:40 de mañana.
 Atención
 Detalles
 "%s" con un click
 No en casa
 No interesado
 No se puede cargar el archivo. Es probable que tenga un formato incorrecto o que no contenga los datos necesarios.
-¡Datos cargados con éxito!
+Carga acelerada de territorios y contactos
 Espere
 calle
 entrada
@@ -223,10 +223,10 @@ credito
 Informe para %s:
 Nota
 Cronómetro activado
-Cronómetro parado, agregado [b]%s[/b] h.
-Cronómetro parado, agregado [b]%s[/b] h. de crédito
+Agregado por cronómetro: [b]%s[/b] h.
+Agregado por cronómetro: [b]%s[/b] h. de crédito
 Ahora se encuentra en la pantalla de primera coonversación. Sólo aparece cuando visita a una persona por primera vez.
-¿Actualizar parámetros de entrada?
+¿Actualizar la entrada recreando todos los apartamentos en el rango especificado? Todos los registros en los apartamentos se conservarán.
 Fecha de la última visita
 Condominio#
 Casas#particulares
@@ -237,17 +237,17 @@ Copiar
 Pegar
 Seleccionar todo
 ¡Hay cambios sin guardar en la página! ¿Proceder sin guardar?
-Aquí encontrará el historial de todas las actualizaciones de informes (máx. %s entradas).
+Aquí encontrará el historial de todas las actualizaciones de informes (máx. %s entradas). También puedes crear tus propias entradas aquí. Se puede fijar una entrada en la parte superior de la lista.
 Tamaño del apartamento en vista por piso
 ¡Base de datos borrada!
-No se puede acceder al archivo. Lo más probable es que el enlace no tenga asignados derechos de acceso público.
-No se ha podido cargar el archivo de datos. Lo más probable es que esté dañado o tenga un formato incorrecto.
 Agregue la lista de hogares separados por comas o saltos de línea.
-Cargando base de datos
+No se ha podido cargar el archivo de datos. Lo más probable es que esté dañado o tenga un formato incorrecto.
+Exportar a#Google Drive
+Exportar a la nube ([u]solo[/u] Google Drive, OneDrive, Dropbox y servicios similares)
 Consejo
 ¡Fallo en la creación de la copia de seguridad!
 Agregar números manualmente
-¡Los números de los apartamentos deben comenzar con un número no inferior a 1! A partir del segundo carácter, se pueden utilizar letras.
+Eliminar el contenido de la nota de forma permanente?
 Datos de Rocket Ministry
 Datos exportados correctamente al archivo %s.
 Datos exportados correctamente a la carpeta Documents (Documentos) de su dispositivo.
@@ -307,8 +307,8 @@ Sepia
 Agregar direcciones como una lista
 ¡Exportación fallida! El nombre del territorio puede contener caracteres no válidos.
 1, 2b, calle del parque 1a, Quinta Avenida 119
-¡Nueva versión encontrada! Se actualizará en el próximo inicio del programa.
-La reordenación de números y plantas no afecta a los datos de visitas existentes.
+Introducido manualmente: [b]%s[/b] h.
+Introducido manualmente: [b]%s[/b] h. de crédito
 Presiona %s para agregar apartamentos a la entrada:
 No hay números de teléfono para exportar en este territorio.
 Números de teléfono en %s
@@ -318,8 +318,8 @@ Cargar datos en la aplicación
 Guarde todos los datos de la aplicación en un archivo
 Recuperar una copia de seguridad si algo salió mal
 Restablecimiento de todos los datos y configuraciones, incluidas las copias de seguridad
-[b]%s[/b] hora(s) agregada(s)
-[b]%s[/b] hora(s) de crédito agregada(s)
+Agregado manualmente: [b]%s[/b] h.
+Agregado manualmente: [b]%s[/b] h. de crédito
 La búsqueda funciona en todos los campos de todos los apartamentos y contactos.
 Pausa#
 Fin#servicio
@@ -329,7 +329,11 @@ Cronómetro reiniciado
 Descripción
 Una etiqueta es cualquier texto que se coloca al final de una entrada del registro. Se puede introducir al desactivar el temporizador o directamente en el registro.
 Nueva entrada
-Nueva entrada del registro
+La nota se ha movido a la nueva sección [b]%s[/b] como una entrada fijada!
 Texto de la etiqueta
-Puede crear una entrada del registro en forma de fecha y hora con una sola etiqueta. La fecha y la hora se introducen automáticamente. Dicha entrada se puede eliminar por completo si se desea (las entradas del registro normales no se eliminan).
+Esta es una entrada antigua: si la desanclas, pronto desaparecerá porque estará fuera del rango del registro. ¿Desanclar?
 Solo con etiquetas
+Exportar a la nube al detener el cronómetro
+¡Nueva versión encontrada! Se actualizará en el próximo inicio del programa.
+Icono en lugar de círculos de colores en la primera llamada
+Fuente de cronómetro simple

@@ -18,7 +18,6 @@ def checkDate(date):
 
 def shortenDate(longDate):
     """ Convert date from format "2016-07-22" into "22.07" """
-
     # 2016-07-22
     # 0123456789
     try:
@@ -142,7 +141,7 @@ def timeFloatToHHMM(hours=None, delta=None):
 
 def numberize(line):
     """ Убирает из слова все нечисловые символы, чтобы получилось отсортировать по номеру """
-    result = 0
+    result = 0.0
     try:
         return float(line)
     except:

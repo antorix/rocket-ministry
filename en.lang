@@ -2,7 +2,7 @@ English
 Territories
 Contacts
 Report
-Save
+Log
 Add entrance
 Are you a pioneer? We will set up the monthly hour requirement in settings. You may change it manually.
 Nothing found
@@ -46,14 +46,14 @@ Restore backup from %s?
 Error in some of the fields, please check data!
 credit: %s
 Don't divide into streets
-Service Year
+Pioneer calculator
 Yes
 Type
 Settings
-Settings saved
+Log entries limit
 Data
-Notepad
-Data saved, backup copy created.
+Add
+Add
 House
 Apartments:
 
@@ -142,12 +142,12 @@ Rocket Ministry for Windows and Linux, documentation, source code:
 Questions, user support:
 Back to top
 Help
-Global note. Displayed on the territories list. Can be used as a reminder.
+Save
 People search
 Enter name, address, or any other information about a person:
 Find
 Nothing found
-Search by "%s"
+Search:
 Results:
 This territory was taken more than 4 months ago! You need to turn it back or prolong by updating its date in the details.
 Export territory
@@ -185,7 +185,7 @@ Service time has started! To finish your service session, just click on the time
 List of numbers
 Paste from clipboard
 Here you can add new numbers using a list of numbers separated by commas or line breaks.
-Add
+Visit record height limit
 Max. %s characters!
 Cancel
 List
@@ -199,14 +199,14 @@ Are you sure?
 Delete
 Delete visit record
 Delete record from
-In brackets, you may see how much time you are ahead (+) or behind (-) your monthly requirement for the current day of the month. For example, with the requirement of 50 hours, if you have had no service for today, this value will decrease approximately by 1:40 tomorrow.
+Here you can see how much time you are ahead (+) or behind (-) your monthly requirement for the current day of the month. For example, with the requirement of 50 hours, if you have had no service for today, this value will decrease approximately by 1:40 tomorrow.
 Attention
 Details
 %s with one click
 Not at home
 Not interested
 Failed to load file. Most likely, it has the wrong format or does not contain the necessary data.
-Data successfully loaded!
+Accelerated loading of territories and contacts
 Please wait
 street
 entrance
@@ -223,10 +223,10 @@ credit
 Report for %s:
 Comments
 Timer started
-Timer stopped, added [b]%s[/b] h.
-Timer stopped, added [b]%s[/b] h. of credit
+[b]%s[/b] h. added by timer
+[b]%s[/b] h. of credit added by timer
 You are now on the first call screen. It appears only when you are visiting a person for the first time.
-Update entrance parameters?
+Update the block with regenerating of all apartments in the given range? All records in the apartments will remain intact.
 Last visit date
 Building#
 Houses#
@@ -237,17 +237,17 @@ Copy
 Paste
 Select all
 There are unsaved changes at the page! Proceed without saving?
-Here you will find the history of all report updates (max. %s entries).
+Here you will find the history of all report updates (max. %s entries). You can also create your own entries here. One entry can be pinned at the top of the list.
 Apartment size in per-floor view
 Database wiped!
-Unable to access file. Most likely, the link is not assigned public access rights.
-Failed to load data file. Most likely, it is damaged or of wrong format.
 Add the list of households separated by commas or line breaks.
-Loading database
+Failed to load data file. Most likely, it is damaged or of wrong format.
+Export to#Google Drive
+Export to the cloud ([u]only[/u] Google Drive, OneDrive, Dropbox and similar services)
 Tip
 Backup copy creation failed!
 Add numbers manually
-Apartment numbers must begin with a number not less than 1! Starting from the second character, letters can be used.
+Delete the note content permanently?
 Rocket Ministry Data
 Data successfully exported to file %s.
 Data successfully exported to the Documents folder on your device.
@@ -307,8 +307,8 @@ Sepia
 Add addresses as a list
 Export failed! The territory name may contain invalid characters.
 1, 2b, Park St 1a, 5th Avenue 119
-New version found! It will be updated on the next program start.
-Updating entrance parameters does not delete existing call records.
+[b]%s[/b] hour(s) entered manually
+[b]%s[/b] hour(s) of credit entered manually
 Press %s to add flats to the entrance:
 No phone numbers to export in this territory!
 Phone numbers in %s
@@ -318,8 +318,8 @@ Load data into the app
 Save all app data to a file
 Recover a backup copy if something went wrong
 Full reset of all program data and settings, including backups
-[b]%s[/b] hour(s) added
-[b]%s[/b] hour(s) of credit added
+[b]%s[/b] hour(s) added manually
+[b]%s[/b] hour(s) of credit added manually
 The search works in all fields of all apartments and contacts.
 Pause#
 End#ministry
@@ -329,7 +329,11 @@ Timer restarted
 Label (optional)
 A label is any text at the end of a log entry. It can be entered when disabling the timer or directly in the log.
 New entry
-New log entry
+The note has moved to the new section [b]%s[/b] as a pinned entry!
 Label text
-You can add a log entry in the form of a date and time with a sole label. The date and time are entered automatically. Such an entry can be completely deleted if desired (regular log entries are not deleted).
+This is an old entry: if you unpin it, it will soon disappear because it will be out of range of the log. Unpin?
 Only with labels
+Export to cloud on timer stop
+New version found! It will be updated on the next program start.
+Icon instead of colored circles on first call popup
+Simple timer font

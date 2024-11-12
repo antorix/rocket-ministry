@@ -2,12 +2,12 @@ Türkçe
 Sahalar
 Kişiler
 Rapor
-Kaydet
+Günlük
 Blok oluştur
 Öncü müsün? O zaman aylık saat sayısını ayarlarda belirleyeceğiz. Onu kendiniz de değiştirebilirsiniz.
 Bir şey bulunmadı
 Sistem hatası
-Rapor notları
+Hizmet günlüğü
 İlk
 Ev(ler) ekle
 Blok görüntüsünü orijinal konumuna döndürmek için %s tuşuna basın.
@@ -46,14 +46,14 @@ Veri kurtarma
 Alanlardan birinde hata var, verileri kontrol edin!
 kredi: %s
 Sokaklara bölünmeyin
-Hizmet yılı
+Öncü hesaplayıcı
 evet
 Tip
 Ayarlar
-Ayarlar kaydedildi
+Günlük girişlerinin sınırı
 Veriler
-Not defteri
-Veriler kaydedildi, yedeklendi.
+Ekle
+Ekle
 Ev
 Daire:
 
@@ -142,16 +142,16 @@ Windows ve Linux için Rocket Ministry, yardım ve kaynak kodu:
 Sorular, teknik destek:
 Başa dönüş
 Yardım
-Serbest formdaki herhangi bir bilgi
+Kaydet
 Kişi arama
 Kişinin ismini, adresini veya herhangi bir bilgiyi girin:
 Aramak
 Bir şey bulunmadı
-"%s" ile ara
+Arama:
 Sonuçlar:
 Bu arsa 4 aydan daha uzun bir süre önce alınmıştır! Ayarlarda tarih güncellenerek teslim edilmesi veya yenilenmesi gerekir.
 Dışa aktarma
-Telefon numaralarını dışa aktarma
+Telefon ihracatı
 Evler
 Yeni evler
 bl.
@@ -185,7 +185,7 @@ Hizmet süresi doldu! Bitirmek için zamanlayıcı düğmesine tekrar basmanız 
 Sayı listesi
 Panodan yapıştır
 Burada yeni numaraları virgülle ayrılmış basit bir listeye veya yeni bir satıra ekleyebilirsiniz
-Ekle
+Katılım kaydının yüksekliğini sınırlama
 Maksimum %s karakter!
 İptal
 Liste
@@ -199,14 +199,14 @@ Bundan emin misiniz?
 Siliniyor
 Ziyaret kaydının silinmesi
 Şuradaki kaydı sil
-Parantezlerde, ayın geçerli günü için aylık normla karşılaştırıldığında bir hisse senedi (+) veya gecikme (-) belirtilir. Örneğin, 50 saat normunda bir gün hizmet etmezseniz, ertesi gün bu rakam yaklaşık 1:40 oranında düşecektir.
+Ayın geçerli günü için aylık normla karşılaştırıldığında bir hisse senedi (+) veya gecikme (-) belirtilir. Örneğin, 50 saat normunda bir gün hizmet etmezseniz, ertesi gün bu rakam yaklaşık 1:40 oranında düşecektir.
 Dikkat
 Bilgi
 Tek tıklamayla "%s"
 Kimse yok
 Ret
 Dosya yüklenemedi. Büyük olasılıkla hatalı biçimlendirilmiş veya gerekli verileri içermiyor.
-Veriler başarıyla yüklendi!
+Bölgelerin ve kişilerin hızlandırılmış yüklenmesi
 Lütfen bekleyin
 sokak
 blok
@@ -223,10 +223,10 @@ kredi
 %s için rapor:
 Not
 Zamanlayıcı başladı
-Zamanlayıcı durduruldu ve [b]%s[/b] saat eklendi
-Zamanlayıcı durduruldu ve [b]%s[/b] saat kredi eklendi
+Zamanlayıcı tarafından eklendi: [b]%s[/b] saat
+Zamanlayıcı tarafından eklendi: [b]%s[/b] saat kredi
 Önünüzde ilk ziyaret ekranı. Sadece kişiyi ilk kez ziyaret ettiğinizde ortaya çıkar.
-Blok parametreleri güncellensin mi?
+Blok’u belirtilen aralıktaki tüm daireleri yeniden oluşturarak güncellemek mi? Dairelerdeki tüm kayıtlar korunacaktır.
 Son ziyaret tarihi
 Apartman#
 Özel#evler
@@ -237,17 +237,17 @@ Kopyala
 Yapıştır
 Tümünü seç
 Sayfada kaydedilmemiş değişiklikler var! Kaydetmeden devam edilsin mi?
-Burada tüm rapor güncellemelerinin bir geçmişi olacaktır (maksimum %s kayıt).
+Burada tüm rapor güncellemelerinin bir geçmişi olacaktır (maksimum %s kayıt). Burada kendi girişlerinizi de oluşturabilirsiniz. Bir giriş listenin en üstüne sabitlenebilir.
 Kat bazında görünümde daire büyüklüğü
 Veritabanı temizlendi!
-Dosyaya erişilemiyor. Büyük olasılıkla, kendisine genel erişim hakları verilmemiştir.
-Veri dosyası yüklenemedi. Büyük olasılıkla hasar görmüş veya formata uymuyor.
 Hanelerin listesini virgülle veya satır sonlarıyla ayırarak ekleyin.
-Veritabanının indirilmesi
+Veri dosyası yüklenemedi. Büyük olasılıkla hasar görmüş veya formata uymuyor.
+Google Drive’a#Aktar
+Buluta aktar ([u]yalnızca[/u] Google Drive, OneDrive, Dropbox ve benzeri hizmetler)
 İpucu
 Yedekleme başarısız oldu!
 Numaraları manuel olarak ekleyin
-Daire numaraları 1'den az olmayan bir rakamla başlamalıdır! İkinci karakterden başlayarak harfler kullanılabilir.
+Not içeriğini kalıcı olarak sil?
 Rocket Ministry verileri
 Veriler, %s dosyasına başarıyla aktarıldı.
 Veriler cihazınızdaki Documents (Belgeler) klasörüne başarıyla aktarıldı.
@@ -307,8 +307,8 @@ Sepya
 Adresleri liste olarak ekleyin
 Dışa aktarma başarısız oldu! Saha adı geçersiz karakterler içerebilir.
 1,2a Kurtuluş 20-5, Istiklal 19/2-15
-Yeni versiyon bulundu! Programın bir sonraki başlangıcında güncellenecektir.
-Numaralandırma ve kat sayısındaki değişiklikler, yapılan ziyaretleri etkilemez.
+Manuel olarak girildi: [b]%s[/b] saat
+Manuel olarak girildi: [b]%s[/b] saat kredi
 Blok'a bir daire eklemek için %s'ye basın:
 Bu alanda telefon numarası yok!
 %s saha telefon numaraları
@@ -318,8 +318,8 @@ Uygulamaya veri yükleyin
 Tüm uygulama verilerini bir dosyaya kaydedin
 Bir şeyler ters giderse yedek kopyayı kurtarın
 Yedeklemeler dahil tüm program verilerinin ve ayarlarının tamamen sıfırlanması
-[b]%s[/b] saat eklendi
-[b]%s[/b] saat kredi eklendi
+Manuel olarak eklendi: [b]%s[/b] saat
+Manuel olarak eklendi: [b]%s[/b] saat kredi
 Arama, tüm dairelerin ve kişilerin tüm alanlarında çalışır.
 Duraklatma#
 Son#hizmet
@@ -329,7 +329,11 @@ Zamanlayıcı yeniden başlatıldı
 Açıklama
 Etiket, bir günlük girişinin sonundaki herhangi bir metindir. Zamanlayıcı devre dışı bırakıldığında veya doğrudan günlüğe girilebilir.
 Yeni giriş
-Yeni günlük girişi
+Not, [b]%s[/b] yeni bölüme sabitlenmiş bir giriş olarak taşındı!
 Etiket metni
-Tek bir etiketle tarih ve saat biçiminde bir günlük girişi oluşturabilirsiniz. Tarih ve saat otomatik olarak girilir. İstenirse böyle bir giriş tamamen silinebilir (normal günlük girişleri silinmez).
+Bu eski bir giriş: sabitlemeyi kaldırırsanız, günlük aralığının dışında kalacağı için yakında kaybolacaktır. Sabitlemeyi kaldır?
 Yalnızca etiketlerle
+Zamanlayıcı durduğunda buluta aktar
+Yeni versiyon bulundu! Programın bir sonraki başlangıcında güncellenecektir.
+İlk aramada renkli daireler yerine simge
+Basit zamanlayıcı yazı tipi
