@@ -1,4 +1,4 @@
-![image](https://github.com/antorix/Rocket-Ministry/assets/9825468/7c3d0712-6cbc-4c4b-b61a-226abe5bc5bc)
+![Rocket Ministry, PC version](https://github.com/user-attachments/assets/359692f9-e2e7-4384-a56a-a70c1edc25ad)
 
 Home of Rocket Ministry, the only cross-platform ministry app in the world.
 
