@@ -29,7 +29,7 @@ source.include_exts = py,ttf,fontd,png,lang,kv
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 2.16.000
+version = 2.16.001
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -286,7 +286,7 @@ android.archs = arm64-v8a, armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
-android.numeric_version = 102120174
+android.numeric_version = 102120175
 
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True

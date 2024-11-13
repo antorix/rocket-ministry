@@ -4,8 +4,8 @@
 from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
-Version = "2.16.000"
-RCNumber = "RC6"
+Version = "2.16.001"
+RCNumber = ""
 
 """ 
 * Оптимизация производительности.
@@ -128,6 +128,7 @@ class House(object):
         self.date = time.strftime("%Y-%m-%d", time.localtime())
         self.statsCached = None # кеш статистики, несохр.
         self.dueCached = None # кеш просроченности, несохр.
+        self.houseBox = None # кеш кнопки дома в сборе со всеми виджетами
 
     def sort(self):
         """ Сортировка в списке участков по типу с учетом участка-списка """
@@ -2378,7 +2379,10 @@ class ScrollButton(Button):
     def on_touch_down(self, touch):
         if self.collide_point(touch.x, touch.y):
             self.state = "down"
-            for f in self.footers: f.state = "down"
+            RM.footers = []
+            for f in self.footers:
+                f.state = "down"
+                RM.footers.append(f)
             RM.scrollClick(instance=self)
 
     def on_touch_up(self, touch):
@@ -2409,7 +2413,10 @@ class FooterButton(Button):
     def on_touch_down(self, touch):
         if self.collide_point(touch.x, touch.y):
             RM.btn[self.parentIndex].state = "down"
-            for f in RM.btn[self.parentIndex].footers: f.state = "down"
+            RM.footers = []
+            for f in RM.btn[self.parentIndex].footers:
+                f.state = "down"
+                RM.footers.append(f)
             RM.scrollClick(instance=RM.btn[self.parentIndex])
 
 class NoteButton(Button):
@@ -2420,7 +2427,7 @@ class NoteButton(Button):
         self.id = id
         self.color = RM.standardTextColor
         self.size_hint = None, None
-        self.padding = RM.padding#, RM.padding
+        self.padding = RM.padding
         self.halign = "center"
         self.valign = "center"
         self.markup = True
@@ -3775,10 +3782,13 @@ class RMApp(App):
                     for i in range(len(self.disp.options)):
                         label = self.disp.options[i]
                         colsMinimumActivated = False
+                        if form == "ter":
+                            house = self.houses[i] if len(self.houses) > 0 else None
 
                         if addEllipsis:
                             box = GridLayout(rows=3, cols=3, height=height, size_hint_y=None)
-                            box.add_widget(EllipsisButton(id=None))
+                            if form != "ter" or (house is not None and house.houseBox is None):
+                                box.add_widget(EllipsisButton(id=None))
                             settingsID = None if self.button['porch_inv'] in label or \
                                                  self.button['plus-1'] in label else i
                         elif form == "log": # добавление кнопки
@@ -3809,6 +3819,7 @@ class RMApp(App):
                                     label = f"[color={color1}][font={'arial_narrow_7'}][size={font}]{time}[/size][/font][/color]{div1}[color={color2}]{body}[/color]{div2}{tag2}"
                                     self.btn.append(ScrollButton(id=i, text=label, height=height, spacing=0,
                                                         padding=(self.padding*2, 0) if self.theme != "3D" else None))
+
                             elif label != "":
                                 self.btn.append(ScrollButton(id=i, text=label, height=height))
 
@@ -3819,10 +3830,13 @@ class RMApp(App):
                             else: continue
 
                             if addEllipsis: # добавляем три точки
-                                box.add_widget(EllipsisButton(id=settingsID,
-                                                              hy=.08 if not self.button["road"] in label \
-                                                                  and not self.button["plus-1"] in label else .04))
-                                box.add_widget(EllipsisButton(id=None))
+                                if form == "ter" and (house is not None and house.houseBox is not None):
+                                    pass
+                                else:
+                                    box.add_widget(EllipsisButton(id=settingsID,
+                                                                  hy=.08 if not self.button["road"] in label \
+                                                                      and not self.button["plus-1"] in label else .04))
+                                    box.add_widget(EllipsisButton(id=None))
 
                             if len(footer) > 0: # индикаторы-футеры, если они есть
                                 box.height = height * 1.32
@@ -3865,14 +3879,14 @@ class RMApp(App):
                                 box.spacing = self.spacing
 
                             if addEllipsis and not self.settings[0][25]: # на всех формах с тремя точками добавляем заметку снизу
-                                if form == "ter" or form == "con":
-                                    box.add_widget(EllipsisButton(id=None))
-                                    box.add_widget(EllipsisButton(id=None))
+                                box.add_widget(EllipsisButton(id=None))
+                                box.add_widget(EllipsisButton(id=None))
                                 # вставляем еще один бокс только для того, чтобы снизу в него
                                 # замонтировать кнопку заметки
                                 box1 = BoxLayout(orientation="vertical", size_hint_y=None, height=box.height)
                                 box1.add_widget(box)
-                                if form == "ter":           note = self.houses[i].note
+                                if form == "ter" and house is not None:
+                                    note = self.houses[i].note
                                 elif form == "con":         note = self.allcontacts[i][11]
                                 elif form == "houseView":   note = self.house.porches[i].note \
                                                                 if i < len(self.house.porches) else ""
@@ -3882,7 +3896,18 @@ class RMApp(App):
                                                       height=self.standardTextHeight * (0 if note == "" else .7))
                                     box1.add_widget(nBtn)
                                     box1.height += nBtn.height
-                                self.scrollWidget.add_widget(widget=box1, index=pos)
+
+                                if form != "ter" or (form == "ter" and house is not None and house.houseBox is None):
+                                    self.scrollWidget.add_widget(widget=box1, index=pos)
+                                    if form == "ter": house.houseBox = box1 # кешируем box в участок
+
+                                else: # подставляем кешированную кнопку участка, а не формируем ее заново
+                                    try:
+                                        house.houseBox.parent.remove_widget(house.houseBox)
+                                        self.scrollWidget.add_widget(widget=house.houseBox, index=pos)
+                                        print(f"House {house.title}: using cache")
+                                    except: self.scrollWidget.add_widget(widget=box1, index=pos)
+
                             else:
                                 self.scrollWidget.add_widget(widget=box, index=pos)
 
@@ -4922,6 +4947,9 @@ class RMApp(App):
             self.contactsEntryPoint = 0
             self.searchEntryPoint = 0
 
+            for house in self.houses: # если у дома сброшен кеш статистики, то также сбрасываем кешированную кнопку
+                if house.statsCached is None: house.houseBox = None
+
             if self.settings[0][19] == "д":  # first sort - by date
                 self.houses.sort(key=lambda x: x.date, reverse=False)
             elif self.settings[0][19] == "р":  # by size
@@ -5611,6 +5639,11 @@ class RMApp(App):
             self.porch = self.house.porches[0]
             self.porchView(instance=instance)
             return
+
+        def __unclickFooters(*args): # отжимаем футеры с предыдущего шага
+            for f in self.footers: f.state = "normal"
+        Clock.schedule_once(__unclickFooters, .01)
+
         self.mainListsize1 = self.mainList.size[1]
         self.dest = self.house.title
 
