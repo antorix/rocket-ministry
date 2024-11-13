@@ -5,7 +5,7 @@ from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
 Version = "2.16.000"
-RCNumber = "RC5"
+RCNumber = "RC6"
 
 """ 
 * Оптимизация производительности.
@@ -3785,8 +3785,7 @@ class RMApp(App):
                             box = GridLayoutPositioned(position=i, rows=1, cols=2, height=height,
                                                        size_hint_y=None)
                         else:
-                            box = BoxLayout(orientation="vertical", height=height, #size_hint_x=.5,
-                                            size_hint_y=None)
+                            box = BoxLayout(orientation="vertical", height=height, size_hint_y=None)
 
                         if form == "porchView":
                             if not "." in label.number or self.house.type == "private":
@@ -3865,7 +3864,7 @@ class RMApp(App):
                                 self.totalRecordsHeight += box.height
                                 box.spacing = self.spacing
 
-                            if addEllipsis and len(footer) > 0: # на всех формах с тремя точками добавляем заметку снизу
+                            if addEllipsis and not self.settings[0][25]: # на всех формах с тремя точками добавляем заметку снизу
                                 if form == "ter" or form == "con":
                                     box.add_widget(EllipsisButton(id=None))
                                     box.add_widget(EllipsisButton(id=None))
@@ -4152,7 +4151,8 @@ class RMApp(App):
             porch = self.house.getPorchType()[1] + (":" if self.language != "hy" else ".")
             if self.language != "ka": porch = porch[0].upper() + porch[1:]
             name = self.msg[21] + (":" if self.language != "hy" else ".")
-            number = self.msg[24] if self.house.type == "condo" else (self.msg[15] if self.house.listType() else self.msg[25])
+            num2 = self.msg[25].replace("#", "\n") if "#" in self.msg[25] else self.msg[25]
+            number = self.msg[24] if self.house.type == "condo" else (self.msg[15] if self.house.listType() else num2)
             addressDisabled = False if self.house.type == "virtual" else True
             porchDisabled = False if self.house.type == "virtual" else True
             numberDisabled = True if self.flat.number == "virtual" else False
@@ -4473,7 +4473,6 @@ class RMApp(App):
                     self.popup(popupForm="addList", instance=instance)
 
                 if self.house.type == "condo": # многоквартирный дом
-                    #self.porch.floorview = None
                     self.disp.form = "createNewFlat"
                     self.clearTable()
                     self.positive.text = self.button["save"]
@@ -4548,12 +4547,12 @@ class RMApp(App):
                             self.inputBoxText.text = self.msg[167]
                             filled = self.inputBoxEntry.text
                             self.textbox.remove_widget(self.inputBoxEntry)
-                            self.inputBoxEntry = MyTextInput(text=filled, hint_text=self.msg[59], multiline=self.multiline,
+                            self.inputBoxEntry = MyTextInput(text=filled, multiline=self.multiline,
                                                              height=self.standardTextHeight*1.3,
                                                              rounded=True, size_hint_x=Window.size[0]/2,
                                                              size_hint_y=None, pos_hint=self.pos_hint, input_type="number")
                             self.textbox.add_widget(self.inputBoxEntry)
-                            self.inputBoxEntry2 = MyTextInput(hint_text=self.msg[60], multiline=self.multiline,
+                            self.inputBoxEntry2 = MyTextInput(multiline=self.multiline,
                                                               height=self.standardTextHeight * 1.3,
                                                               input_type="number", size_hint_x=Window.size[0]/2,
                                                               rounded=True, size_hint_y=None, pos_hint=self.pos_hint)

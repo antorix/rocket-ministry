@@ -22,14 +22,14 @@ Name
 Person (name, description):
 Phone:
 Apartment:
-Number/address:
+Number/#address:
 Adjustment mode
 Click %s to adjust the size and position of the entrance grid.
 Phone number %s copied into clipboard.
 Name
 Date taken
 Interested persons
-Worked level
+Worked rate
 Address
 Number
 Phone
@@ -327,7 +327,7 @@ End#credit
 Timer paused
 Timer restarted
 Label (optional)
-A label is any text at the end of a log entry. It can be entered when disabling the timer or directly in the log.
+A label is any text at the end of a log entry. It can be entered on stopping the timer or directly in the log.
 New entry
 The note has moved to the new section [b]%s[/b] as a pinned entry!
 Label text

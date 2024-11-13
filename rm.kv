@@ -330,7 +330,7 @@
     ratio: (.6 if app.orientation == "v" else .8) if app.disp.form == 'flatView' else (.35 if app.orientation == "v" else .15)
     pos_hint: {"center_x": .5} if app.disp.form == "flatView" else {"right": .89}
     limit: app.mainList.width * self.ratio
-    size: [(self.texture_size[0]*1.15 if self.texture_size[0] < self.limit else self.limit*1.15), self.texture_size[1]*1.1]
+    size: [(self.texture_size[0]*1.12 if self.texture_size[0] < self.limit else self.limit*1.12), self.texture_size[1]*1.1]
     canvas.before:
         Color:
             rgba: (app.noteLabelBackgroundColor if self.state=='normal' else (app.roundButtonColorPressed if app.mode == "light" else app.roundButtonColorPressed2)) if app.theme != "3D" else [0,0,0,0]
