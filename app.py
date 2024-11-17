@@ -5,7 +5,7 @@ from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
 Version = "2.16.002"
-RCNumber = "RC4"
+RCNumber = "RC5"
 
 """ 
 * Исправления и оптимизации.
@@ -4103,7 +4103,7 @@ class RMApp(App):
                         self.disp.grid = self.mainList.children[0].children[0].children
                         if self.disp.grid is not None: # сортировка виджетов напрямую
                             self.porch.sortFlats(grid=self.disp.grid)
-                    elif form == "flatView":
+                    elif form == "flatView" and self.theme != "3D":
                         self.backButton.size_hint_x, self.sortButton.size_hint_x, self.detailsButton.size_hint_x = \
                             self.tbWidth[0], .45, .3
                     elif form == "con":
@@ -6094,8 +6094,9 @@ class RMApp(App):
         self.backButton.disabled = False
         if title is not None: self.pageTitle.text = f"[ref=title]{title}[/ref]"
         self.positive.text = positive if positive is not None else self.button["save"]
-        self.backButton.size_hint_x, self.sortButton.size_hint_x, self.detailsButton.size_hint_x = \
-            self.tbWidth[0], .45, .3
+        if self.theme != "3D":
+            self.backButton.size_hint_x, self.sortButton.size_hint_x, self.detailsButton.size_hint_x = \
+                self.tbWidth[0], .45, .3
         if neutral is not None:
             self.neutral.text = neutral
             self.neutral.disabled = False
@@ -6194,9 +6195,9 @@ class RMApp(App):
         self.firstCallPopup = False
         self.positive.show()
         self.floaterBox.clear_widgets()
-        if self.disp.form != "flatDetails": self.floaterBox.clear_widgets()
-        self.backButton.size_hint_x, self.sortButton.size_hint_x, self.detailsButton.size_hint_x = \
-            self.tbWidth[0], .45, .3
+        if self.theme != "3D":
+            self.backButton.size_hint_x, self.sortButton.size_hint_x, self.detailsButton.size_hint_x = \
+                self.tbWidth[0], .45, .3
         self.navButton.disabled = True
         self.navButton.text = ""
         if title is not None: self.pageTitle.text = f"[ref=title]{title}[/ref]"
