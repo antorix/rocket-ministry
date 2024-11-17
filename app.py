@@ -5,7 +5,7 @@ from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
 Version = "2.16.002"
-RCNumber = "RC2"
+RCNumber = "RC3"
 
 """ 
 * Исправления и оптимизации.
@@ -4060,6 +4060,8 @@ class RMApp(App):
                             return
                         else:
                             grid = self.porch.scrollview.children[0]  # адресация таблицы, уже замонтированной на porch
+                            if self.orientation == "h" and form != "porchView": grid.cols = 2
+                            else: grid.cols = self.settings[0][10]
                             self.mainList.add_widget(self.porch.scrollview)
                             if not tableButtonClicked and self.flat is not None and self.flat.buttonID is not None:
                                 # при возврате из квартиры перерисовываем только квартиру
