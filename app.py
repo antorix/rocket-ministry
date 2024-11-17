@@ -5,7 +5,7 @@ from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
 Version = "2.16.002"
-RCNumber = "RC3"
+RCNumber = "RC4"
 
 """ 
 * Исправления и оптимизации.
@@ -5234,7 +5234,7 @@ class RMApp(App):
                             if addNote:
                                 box = self.cachedContacts[c]
                                 nBtn = NoteButton(text=con1[11], height = self.standardTextHeight*.7, id=box.id,
-                                                radius=[0, 0, self.rad, self.rad])
+                                            radius=[0, 0, self.rad, self.rad])
                                 box.add_widget(widget=nBtn, index=0)
                                 box.height += nBtn.height
                                 nBtn.pos_hint = {"right": (.89 if self.orientation == "v" or len(self.disp.options) > 1 else .8)}
