@@ -14,7 +14,7 @@ Presione %s para devolver la imagen de entrada a su posición original.
 Territorio:
 Dirección:
 detalles
-Fecha que se tendrá:
+
 Nota:
 Nombre de entrada:
 Nombre de la calle:
@@ -206,7 +206,7 @@ Detalles
 No en casa
 No interesado
 No se puede cargar el archivo. Es probable que tenga un formato incorrecto o que no contenga los datos necesarios.
-Carga acelerada de territorios y contactos
+
 Espere
 calle
 entrada

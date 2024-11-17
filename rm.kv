@@ -1,5 +1,6 @@
 #:import Window kivy.core.window.Window
 #:import get_hex_from_color kivy.utils.get_hex_from_color
+#:import icon iconfonts
 
 <BubbleContent>:
     opacity: .5 if self.disabled else .8
@@ -119,7 +120,6 @@
     background_color: [0,0,0,0]
     pos: Window.center[0] - self.size[0]/2, Window.center[1] - self.size[1]/2
     font_size: app.fontXXL * 1.5
-    text: app.button["wait"]
     background_normal: ""
     background_down: ""
     markup: True
@@ -325,20 +325,6 @@
 <MyLabelAligned>:
     text_size: self.size
 
-<NoteButton>:
-    background_color: app.globalBGColor
-    ratio: (.6 if app.orientation == "v" else .8) if app.disp.form == 'flatView' else (.35 if app.orientation == "v" else .15)
-    pos_hint: {"center_x": .5} if app.disp.form == "flatView" else {"right": .89}
-    limit: app.mainList.width * self.ratio
-    size: [(self.texture_size[0]*1.12 if self.texture_size[0] < self.limit else self.limit*1.12), self.texture_size[1]*1.1]
-    canvas.before:
-        Color:
-            rgba: (app.noteLabelBackgroundColor if self.state=='normal' else (app.roundButtonColorPressed if app.mode == "light" else app.roundButtonColorPressed2)) if app.theme != "3D" else [0,0,0,0]
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [app.rad, app.rad, 0, 0] if app.disp.form == "rep" else (([0, 0, app.rad, app.rad] if app.disp.form != "flatView" else [app.rad, app.rad, 0, 0]) if app.theme != "3D" else [0, ])
-
 <FooterButton>:
     color: get_hex_from_color([app.linkColor[0],app.linkColor[1],app.linkColor[2],.9]) if app.mode == "light" else app.standardTextColor
     background_color: app.globalBGColor
@@ -381,6 +367,25 @@
 
 <FontCheckBox>:
     text_size: self.size
+
+<NoteButton>:
+    background_color: app.globalBGColor
+    radius: self.radius
+    ratio: (.6 if app.orientation == "v" else .8) if app.disp.form == 'flatView' else (.35 if app.scrollWidget.cols > 1 else .15)
+    pos_hint: {"center_x": .5} if app.disp.form == "flatView" else {"right": (.89 if app.orientation == "v" or len(app.disp.options) > 1 else .8)}
+    limit: app.mainList.width * self.ratio
+    size: [(self.texture_size[0]*1.12 if self.texture_size[0] < self.limit else self.limit*1.12), self.texture_size[1]*1.1]
+    canvas.before:
+        Color:
+            rgba: (app.noteLabelBackgroundColor if self.state=='normal' else (app.roundButtonColorPressed if app.mode == "light" else app.roundButtonColorPressed2)) if app.theme != "3D" else [0,0,0,0]
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: self.radius
+
+<GridLayoutPositioned>
+    size_hint_x: .75 if app.scrollWidget.cols > 1 and len(app.disp.options) == 1 else 1
+    pos_hint: {"center_x": .5} if app.scrollWidget.cols > 1 and len(app.disp.options) == 1 else {"left": 0}
 
 <MainScroll>:
     cols: (1 if Window.size[0] < Window.size[1] else 2) if app.disp.form != "porchView" else app.settings[0][10]

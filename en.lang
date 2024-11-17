@@ -14,7 +14,7 @@ Press %s to return the entrance grid to its original position.
 Territory:
 Address:
 details
-Date taken:
+
 Note:
 Entrance number:
 Street name:
@@ -206,7 +206,7 @@ Details
 Not at home
 Not interested
 Failed to load file. Most likely, it has the wrong format or does not contain the necessary data.
-Accelerated loading of territories and contacts
+
 Please wait
 street
 entrance
