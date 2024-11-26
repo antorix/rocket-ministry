@@ -470,14 +470,14 @@ class CircularTimePicker(BoxLayout):
     defaults to "hours".
     """
 
-    selector_color = ListProperty([.8, .8, .8])#[RM.titleColor[0], RM.titleColor[1], RM.titleColor[2]])#[.337, .439, .490])
+    selector_color = ListProperty([.8, .8, .8])
     """Color of the number selector and of the highlighted text. RGB.
 
     :attr:`selector_color` is a :class:`~kivy.properties.ListProperty` and
     defaults to [.337, .439, .490] (material green).
     """
 
-    color = ListProperty([1,1,1])
+    color = ListProperty(app.RM.standardTextColor)
     """Color of the number labels and of the center dot. RGB.
 
     :attr:`color` is a :class:`~kivy.properties.ListProperty` and

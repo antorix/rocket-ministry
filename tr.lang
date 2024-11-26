@@ -14,7 +14,7 @@ Blok görüntüsünü orijinal konumuna döndürmek için %s tuşuna basın.
 Saha:
 Adres:
 ayarlar
-
+Bölgelerin ve kişilerin kompakt görünümü
 Not:
 Blok numarası:
 Sokak adı:
@@ -199,15 +199,15 @@ Bundan emin misiniz?
 Siliniyor
 Ziyaret kaydının silinmesi
 Şuradaki kaydı sil
-Ayın geçerli günü için aylık normla karşılaştırıldığında bir hisse senedi (+) veya gecikme (-) belirtilir. Örneğin, 50 saat normunda bir gün hizmet etmezseniz, ertesi gün bu rakam yaklaşık 1:40 oranında düşecektir.
+Bu, aylık gereksiniminize göre, ayın kalan günlerinde vaaz etmeniz gereken ortalama saat sayısıdır.
 Dikkat
 Bilgi
 Tek tıklamayla "%s"
 Kimse yok
 Ret
 Dosya yüklenemedi. Büyük olasılıkla hatalı biçimlendirilmiş veya gerekli verileri içermiyor.
-
-Lütfen bekleyin
+Sık kullanılanlar
+Tüm
 sokak
 blok
 İlk caddeyi ekleyin
@@ -296,7 +296,7 @@ s
 d
 Evet
 Hayır
-
+Grafit
 Gece
 Akşam
 Sabah
@@ -337,3 +337,8 @@ Zamanlayıcı durduğunda buluta aktar
 Yeni versiyon bulundu! Programın bir sonraki başlangıcında güncellenecektir.
 İlk aramada renkli daireler yerine simge
 Basit zamanlayıcı yazı tipi
+Aylık saat gereksiniminiz var mı?
+Daha sonra karar vereceğim
+Aylık gereksiniminizi girin
+Telefon numarası giriş özelliği ayarlardan devre dışı bırakılabilir.
+Veriler başarıyla yüklendi! Sonuçtan memnun kalmazsanız, en son yedeği geri yükleyin.

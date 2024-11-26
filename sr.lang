@@ -14,7 +14,7 @@ Pritisnite %s da biste vratili ulaznu mrežu u prvobitni položaj.
 Područje:
 Adresa:
 detalji
-
+Kompaktan prikaz teritorija i kontakata
 Primedba:
 Broj ulaza:
 Naziv ulice:
@@ -199,15 +199,15 @@ Da li ste sigurni?
 Izbriši
 Izbriši beleške o posetama
 Izbriši beleške od
-Možete videti koliko vremena ste ispred (+) ili zaostajete (-) za mesečnom potrebom za tekućim danom u mesecu. Na primer, sa zahtevom od 50 sati, ako danas niste imali propoved, ta vrednost će se sutra smanjiti za oko 1:40.
+Ovo je prosečan broj sati koje treba da propovedaš svakog od preostalih dana u mesecu, na osnovu tvoje mesečne norme.
 Pažnja
 Info
 "%s" jednim klikom
 Nema kući
 Nezainteresovan
 Nije moguće učitati datoteku. Najverovatnije je u pogrešnom formatu ili ne sadrži potrebne podatke.
-
-Molimo sačekajte
+Često korišćeni
+Svi
 ulica
 ulaz
 Dodajte prvu ulicu
@@ -296,7 +296,7 @@ s
 m
 Da
 Ne
-
+Grafit
 Noć
 Veče
 Jutro
@@ -337,3 +337,8 @@ Izvezi u oblak kada se tajmer zaustavi
 Pronađena nova verzija! Biće ažuriran sledeći put kada pokrenete program.
 Ikona umesto obojenih krugova pri prvom pozivu
 Jednostavan font tajmera
+Da li imate potrebu za radnim vremenom mesečno?
+Odlučiću kasnije
+Unesite svoju mesečnu potrebu
+Funkcija unosa telefonskog broja može se isključiti u podešavanjima.
+Podaci su uspešno učitani! Ako niste zadovoljni rezultatom, vratite najnoviju rezervnu kopiju.

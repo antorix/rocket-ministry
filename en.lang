@@ -14,7 +14,7 @@ Press %s to return the entrance grid to its original position.
 Territory:
 Address:
 details
-
+Compact view of territories and contacts
 Note:
 Entrance number:
 Street name:
@@ -79,7 +79,7 @@ Add street
 Add contact
 Enter contact name and/or description:
 You are creating a standalone contact not associated with any territory. People from all your territories are listed in the contacts automatically if they are assigned the light-green color.
-Congratulations, you have your first interested person! He/she will be automatically added to the Contacts screen due to the light-green color.
+Congratulations, you have your first interested person! He/she will be automatically added to the Contacts screen based on the light-green color.
 No doorbell
 N/A
 m
@@ -192,22 +192,22 @@ List
 Data wiped successfully
 Setting an apartment to the light gray color will delete all its information! Proceed?
 Delete territory
-Before deleting the territory, make sure that all householders you want to keep have the green-light color. This way, they will remain in the contacts section. Proceed with deletion?
+Before deleting the territory, make sure that all householders you want to keep have the light-green color. This way, they will remain in the contacts section. Proceed with deletion?
 Delete entrance
 Delete street
 Are you sure?
 Delete
 Delete visit record
 Delete record from
-Here you can see how much time you are ahead (+) or behind (-) your monthly requirement for the current day of the month. For example, with the requirement of 50 hours, if you have had no service for today, this value will decrease approximately by 1:40 tomorrow.
+This is the average number of hours you need to serve on each of the remaining days of the month, based on your monthly requirement.
 Attention
 Details
 %s with one click
 Not at home
 Not interested
 Failed to load file. Most likely, it has the wrong format or does not contain the necessary data.
-
-Please wait
+Frequently used
+All
 street
 entrance
 Add the first street
@@ -296,7 +296,7 @@ h
 m
 Yes
 No
-
+Graphite
 Night
 Evening
 Morning
@@ -337,3 +337,8 @@ Export to cloud on timer stop
 New version found! It will be updated on the next program start.
 Icon instead of colored circles on first call popup
 Simple timer font
+Do you have a monthly hour requirement?
+I’ll decide later
+Enter your monthly requirement
+The phone number input feature can be disabled in the settings.
+Data successfully loaded! If you are not satisfied with the result, restore the latest backup.

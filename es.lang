@@ -14,7 +14,7 @@ Presione %s para devolver la imagen de entrada a su posición original.
 Territorio:
 Dirección:
 detalles
-
+Vista compacta de territorios y contactos
 Nota:
 Nombre de entrada:
 Nombre de la calle:
@@ -199,15 +199,15 @@ Borrar calle
 Borrar
 Borrar registro de visita
 Borrar registro desde
-Puede ver cuánto tiempo lleva de adelanto (+) o de retraso (-) con respecto a su requisito mensual para el día actual del mes. Por ejemplo, con el requisito de 50 horas, si no ha tenido servicio durante el día de hoy, este valor disminuirá aproximadamente a las 1:40 de mañana.
+Este es el número promedio de horas que necesitas predicar en cada uno de los días restantes del mes, basado en tu requisito mensual.
 Atención
 Detalles
 "%s" con un click
 No en casa
 No interesado
 No se puede cargar el archivo. Es probable que tenga un formato incorrecto o que no contenga los datos necesarios.
-
-Espere
+Frecuentemente usados
+Todos
 calle
 entrada
 Agrega la primera calle
@@ -296,7 +296,7 @@ hrs
 min
 Si
 No
-
+Grafito
 Noche
 Tarde
 Mañana
@@ -337,3 +337,8 @@ Exportar a la nube al detener el cronómetro
 ¡Nueva versión encontrada! Se actualizará en el próximo inicio del programa.
 Icono en lugar de círculos de colores en la primera llamada
 Fuente de cronómetro simple
+¿Tiene un requisito de horas mensuales?
+Decidiré más tarde
+Ingrese su requisito mensual
+La función de ingreso de número de teléfono se puede desactivar en la configuración.
+¡Datos cargados con éxito! Si no está satisfecho con el resultado, restaure la última copia de seguridad.
