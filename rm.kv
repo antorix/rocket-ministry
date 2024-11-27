@@ -331,10 +331,8 @@
     text_size: self.size
 
 <TTab>:
-    color: app.tabColors[0] if self.state=='normal' else app.titleColor
     text_size: self.size
-    defaultText: self.defaultText
-    text: f"{self.defaultText}"
+    color: app.tabColors[0] if self.state=='normal' else app.titleColor
 
 <SortListButton>:
     color: app.linkColor if self.state=='normal' else app.titleColor
@@ -418,6 +416,7 @@
 
 <PopupGridLayout>:
     alpha: self.alpha
+    label: self.label
     background_color: app.globalBGColor if app.theme != "3D" else 0,0,0,0
     canvas.before:
         Color:
