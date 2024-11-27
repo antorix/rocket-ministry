@@ -5,7 +5,7 @@ from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
 Version = "2.16.003"
-RCNumber = "RC4"
+RCNumber = ""
 
 try: # на ПК проверяем версию Kivy и обновляем при необходимости
     from subprocess import check_call
@@ -4427,11 +4427,11 @@ class RMApp(App):
                         if isinstance(self.disp.jump, int) and self.disp.jump < len(self.btn): # прокручиваем до выбранного элемента
                             self.scroll.scroll_to(widget=self.btn[self.disp.jump], padding=self.padding*10, animate=False)
 
-            if self.showUpdate: # один раз показываем уведомление о новой версии
+            if 0:#self.showUpdate: # один раз показываем уведомление о новой версии
                 if self.language == "ru": updatesFile = "new_ru.txt"
                 elif self.language == "uk": updatesFile = "new_uk.txt"
                 else: updatesFile = "new_en.txt"
-                with open(updatesFile, "r", encoding="utf-8", newline='') as file:
+                with open(self.userPath + updatesFile, encoding="utf-8") as file:
                     strings = file.read().splitlines()
                 message = ""
                 dot = f"[color={get_hex_from_color(self.pageTitleColor)}]•[/color]"

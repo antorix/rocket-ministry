@@ -1,4 +1,4 @@
-Redesign of all pop-up windows.
+﻿Redesign of all pop-up windows.
 Redesign of the unvisited apartment menu.
 All types of sorting now work in both directions.
 Frequently used icons are displayed above the general list.
