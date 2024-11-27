@@ -7,8 +7,6 @@ Mobmode = 1 if "mob" in argv else 0
 Version = "2.16.003"
 RCNumber = "RC4"
 
-# !!! Включить self.showUpdate к релизу
-
 try: # на ПК проверяем версию Kivy и обновляем при необходимости
     from subprocess import check_call
     from sys import executable
@@ -145,7 +143,6 @@ class House(object):
         end = datetime.datetime.strptime(time.strftime("%Y-%m-%d", time.localtime()), "%Y-%m-%d")
         delta = relativedelta.relativedelta(end, start)
         diff = delta.months + (delta.years * 12)
-        #print(diff)
         return True if diff >= 4 else False
 
     def getPorchType(self):
@@ -4430,13 +4427,16 @@ class RMApp(App):
                         if isinstance(self.disp.jump, int) and self.disp.jump < len(self.btn): # прокручиваем до выбранного элемента
                             self.scroll.scroll_to(widget=self.btn[self.disp.jump], padding=self.padding*10, animate=False)
 
-            if 0:#self.showUpdate: # один раз показываем уведомление о новой версии
-                with open("new_ru.txt", "r", encoding="utf-8", newline='') as file:
+            if self.showUpdate: # один раз показываем уведомление о новой версии
+                if self.language == "ru": updatesFile = "new_ru.txt"
+                elif self.language == "uk": updatesFile = "new_uk.txt"
+                else: updatesFile = "new_en.txt"
+                with open(updatesFile, "r", encoding="utf-8", newline='') as file:
                     strings = file.read().splitlines()
                 message = ""
                 dot = f"[color={get_hex_from_color(self.pageTitleColor)}]•[/color]"
                 for row in strings: message += f"{dot} {row}\n"
-                self.popup(title="Приложение обновлено!", message=message, heightK=1.5)
+                self.popup(title=self.msg[11], message=message, heightK=1.5)
                 self.showUpdate = False
 
         if progress and delay:
@@ -5448,8 +5448,7 @@ class RMApp(App):
                     if self.fScale <= 1:
                         footer[i].insert(0, "")
                         footer[i].append("")
-                buildingIcon = self.button['building'] if RM.language == "ru" or RM.language == "uk" else self.button['map']
-                housesList.append(f"{self.button['plus-1']}{buildingIcon} {self.msg[95]}") if len(housesList) == 0 else None
+                housesList.append(f"{self.button['plus-1']} {self.msg[95]}") if len(housesList) == 0 else None
 
                 self.disp.update( # display list of houses and options
                     title=f"[b]{self.msg[2]}[/b] ({len(self.houses)})",
@@ -6340,7 +6339,6 @@ class RMApp(App):
                     self.popup(title=self.msg[247], message=self.msg[228])
                     self.mainList.add_widget(self.tip(icon="info", text=self.msg[106], k=.7, halign="center",
                                                       valign="bottom", hint_y=.15))
-                    self.positive.hide()
                 self.colorBtn = []
                 self.activateColorButton()
                 self.colorBox = BoxLayout(size_hint=(1, .163), spacing=self.spacing*2, padding=self.padding*2)
@@ -6353,6 +6351,7 @@ class RMApp(App):
                 self.colorBox.add_widget(self.colorBtn[6])
                 self.mainList.add_widget(self.colorBox)
                 if len(self.flat.records) == 0:
+                    self.positive.hide()
                     self.colorBox.padding = self.padding * 2
                 else:
                     self.colorBox.padding = self.padding * 2, self.padding * 2, self.padding * 2, 0
@@ -7278,7 +7277,7 @@ class RMApp(App):
             )
         )
 
-        Clock.schedule_once(self.popups[0].open, 0)
+        self.launchTopPopup()
 
     def createEmojiPopup(self, instance=None, *args):
         """ Создание и (или) запуск окна выбора иконок. Создается только один раз за работу программы """
@@ -7296,7 +7295,7 @@ class RMApp(App):
                         button.state = "normal"
 
             self.popups.insert(0, self.emojiPopup)
-            self.popups[0].open()
+            self.launchTopPopup()
 
         def __emojiClick(instance):
             """ Клик на кнопку иконки """
@@ -8557,6 +8556,10 @@ class RMApp(App):
         self.popups.insert(0,
             MyPopup(title=title, content=contentMain, size_hint=size_hint, auto_dismiss=auto_dismiss))
 
+        self.launchTopPopup()
+
+    def launchTopPopup(self):
+        """ Запускает самый верхний попап в стеке """
         Clock.schedule_once(self.popups[0].open, 0)
 
     def dismissTopPopup(self, all=False):
