@@ -4936,12 +4936,13 @@ class RMApp(App):
                         self.popup(message=self.msg[133])
 
             elif self.disp.form == "reqSurvey":
-                try: self.settings[0][3] = int(self.inputBoxEntry.text)
-                except: self.popup(message=self.msg[46])
-                else:
-                    self.resources[0][1][9] = 1
-                    self.save()
-                    self.repPressed()
+                if self.inputBoxEntry.text != "":
+                    try: self.settings[0][3] = int(self.inputBoxEntry.text)
+                    except: self.popup(message=self.msg[46])
+                    else:
+                        self.resources[0][1][9] = 1
+                        self.save()
+                        self.repPressed()
 
             # Форма создания квартир/домов
 
@@ -5402,14 +5403,14 @@ class RMApp(App):
                 self.interface.clear_widgets()
                 self.setParameters(reload=True)
                 self.createInterface()
-                if self.resources[0][1][8] == 0:  # интересует версия для ПК?
+                if not self.desktop and self.resources[0][1][8] == 0:  # интересует версия для ПК?
                     def __ask2(*args):
                         self.dismissTopPopup(all=True)
                         self.popup(popupForm="windows", message=self.msg[107],
                                    options=[self.button["yes"], self.button["no"]])
                         self.resources[0][1][8] = 1
                         self.save()
-                    Clock.schedule_once(__ask2, 60)
+                    Clock.schedule_once(__ask2, 120)
                 self.setTheme(firstRun=False)
                 self.positive.show()
                 MyTextInput(initialize=True)
