@@ -159,6 +159,10 @@ class House(object):
         elif self.porchesLayout == "н^":
             self.porches.sort(key=lambda x: x.title, reverse=True)
             self.porches.sort(key=lambda x: ut.numberize(x.title), reverse=True)
+        elif self.porchesLayout == "и": # сортировка подъездов по кол-ву интересующихся
+            self.porches.sort(key=lambda x: x.getInterestNumber())
+        elif self.porchesLayout == "и^":
+            self.porches.sort(key=lambda x: x.getInterestNumber(), reverse=True)
         elif self.porchesLayout == "п": # сортировка подъездов по дате последнего посещения
             self.porches.sort(key=lambda x: x.getLastVisit())
         elif self.porchesLayout == "п^":
@@ -319,6 +323,13 @@ class Porch(object):
         """ Выдает дату последнего посещения квартиры внутри подъезда для сортировки """
         self.flats.sort(key=lambda x: x.lastVisit, reverse=True)
         return self.flats[0].lastVisit if len(self.flats) > 0 else 0
+
+    def getInterestNumber(self):
+        """ Выдает кол-во интересующихся в подъезде для сортировки """
+        count = 0
+        for flat in self.flats:
+            if flat.status == "1": count +=1
+        return count
 
     def getFlatsRange(self):
         """ Выдает диапазон квартир в подъезде """
@@ -803,14 +814,15 @@ class Report(object):
             message = message.replace("[/b]", "")
             RM.log(message, forceNotify=forceNotify) # вывод на toast или уведомление
         if save: RM.save(verify=verify)
-        hours = self.getCurrentHours()[2] # обновляем кнопку с указанием запаса/отставания
-        info = f" {RM.button['info']}" if hours != "" else ""
-        if hours != "":
-            RM.detailsButton.text = f"{info} {hours}"
-            RM.detailsButton.disabled = False
-        else:
-            RM.detailsButton.text = ""
-            RM.detailsButton.disabled = True
+        if RM.disp.form == "rep":
+            hours = self.getCurrentHours()[2] # обновляем кнопку среднего часа, если на странице отчета
+            info = f" {RM.button['info']}" if hours != "" else ""
+            if hours != "":
+                RM.detailsButton.text = f"{info} {hours}"
+                RM.detailsButton.disabled = False
+            else:
+                RM.detailsButton.text = ""
+                RM.detailsButton.disabled = True
 
     def checkNewMonth(self, forceDebug=False):
         RM.dprint("Определяем начало нового месяца.")
@@ -2453,7 +2465,7 @@ class FlatFooterLabel(Label):
 class MyPopup(ModalView):
     """ Попап на основе ModalView """
     def __init__(self, title="", content=None, size_hint=[1,1], auto_dismiss=False, embed=None, alpha=.98,
-                 size=None, button=None, anim=.06, extend=False):
+                 size=None, button=None, anim=.06):
         super(MyPopup, self).__init__()
         self.title = title
         self.embed = embed
@@ -2463,14 +2475,12 @@ class MyPopup(ModalView):
         self.overlay_color = RM.popupOverlayColor
         self.auto_dismiss = auto_dismiss
         self.button = button if button is not None else Button()
-        self.frame = PopupGridLayout(rows=2, cols=1, alpha=alpha,
-                                     padding=(RM.padding*2) if RM.theme != "3D" else \
+        self.frame = PopupGridLayout(rows=2, cols=1, alpha=alpha, padding=(RM.padding*2) if RM.theme != "3D" else \
                                                              (RM.padding*5, RM.padding*6, RM.padding*6, RM.padding*6))
         if RM.theme != "3D":
             self.background_normal = ""
             self.background = ""
             self.background_color = 0,0,0,0
-
         if embed is not None: # встраиваем готовую форму как есть
             self.size = size
             if RM.theme != "3D": self.frame.padding[1] *= 2
@@ -2499,14 +2509,6 @@ class MyPopup(ModalView):
                                             and RM.floors and not RM.porch.pos[0] else 0
         self.center = (Window.center[0] + (0 if RM.orientation == "v" else RM.horizontalOffset*.55) + floor,
                        Window.center[1])
-        """else: # если попап непосещенной квартиры
-            pos_x = RM.clickPosition[0]
-            pos_y = RM.clickPosition[1]
-            if pos_x < (self.size[0] / 2): pos_x = self.size[0] / 2 # коррекции, чтобы не заходило за границы экрана
-            if pos_x > Window.size[0] - (self.size[0] / 2): pos_x = Window.size[0] - (self.size[0] / 2)
-            if pos_y < (self.size[1] / 2): pos_y = self.size[1] / 2
-            if pos_y > Window.size[1] - (self.size[1] / 2): pos_y = Window.size[1] - (self.size[1] / 2)
-            self.center = pos_x, pos_y"""
         self.fbind('center', self.center)
         self.fbind('size', self.center)
         ani = Animation(_anim_alpha=1, d=self.anim)
@@ -2623,7 +2625,10 @@ class FooterButton(Button):
         self.background_down = ""
         self.background_normal = ""
         self.valign = "center"
-        self.halign = "left" if icon('icon-home') in text and RM.disp.form == "con" else "center"
+        if 0:#RM.disp.form == "houseView":
+            self.padding[2] = RM.padding*6
+            self.halign = "right"
+        else: self.halign = "left" if icon('icon-home') in text and RM.disp.form == "con" else "center"
         self.font_size = RM.fontS if RM.desktop else int(RM.fontXXS * .9 * RM.fontScale(cap=1.2))
 
     def on_touch_down(self, touch):
@@ -3124,8 +3129,9 @@ class RMApp(App):
 
     def setParameters(self, reload=False):
         # Определение платформы
-        self.desktop = True if platform == "win" or platform == "linux" or platform == "macosx" else False
-        if Mobmode: self.desktop = False # переопределение через аргумент (для IDE)
+        if Mobmode: self.desktop = False
+        else:
+            self.desktop = True if platform == "win" or platform == "linux" or platform == "macosx" else False
         self.platform = platform
         self.DL = None
         if self.settings[0][6] in self.languages.keys():
@@ -3913,9 +3919,9 @@ class RMApp(App):
 
     # Основные действия с центральным списком
 
-    def updateList(self, instance, restart=False, progress=False, delay=True):
+    def updateList(self, instance, progress=False, delay=True):
         """ Заполнение главного списка элементами """
-        def __continue(restart, *args):
+        def __continue(*args):
             tableButtonClicked = True if "TableButton" in str(instance) or "RetroButton" in str(instance) else False
             form = self.disp.form
             if form == "createNewFlat": form = "porchView"
@@ -4070,8 +4076,6 @@ class RMApp(App):
                 if form == "ter":
                     for house in self.houses:
                         if house.note != "": break
-                    else:
-                        restart = False
                     if len(footer) > 0:
                         self.scrollRadius = [rad, ] if len(self.houses) == 0 else [rad, rad, 0, 0]
                 elif form == "con":
@@ -4079,7 +4083,7 @@ class RMApp(App):
                     if len(footer) > 0: self.scrollRadius = [rad, rad, 0, 0]
                 elif form == "houseView":
                     due = self.house.due()
-                    self.scrollRadius = [rad, ]
+                    #if len(footer) > 0: self.scrollRadius = [rad, rad, 0, 0]
                     if due and self.dueWarnMessageShow:
                         self.mainList.add_widget(self.tip(icon="warn"))
                 elif form == "porchView":
@@ -4206,12 +4210,12 @@ class RMApp(App):
                                 box.add_widget(EllipsisButton(id=None))
 
                             if len(footer) > 0: # индикаторы-футеры, если они есть
-                                if not self.settings[0][25]: box.height = height * 1.32
+                                if not self.settings[0][25] and form != "houseView": box.height = height * 1.32
                                 footerGrid = GridLayout(rows=1, cols=len(footer[i]), size_hint_y=None,
                                                         pos_hint={"center_x": .5}, size_hint_x=.96, height=height*.36)
                                 if label != "" and allowMount:
                                     if not colsMinimumActivated: # чтобы это делалось только 1 раз на страницу
-                                        if form == "con":
+                                        if form == "con":# or form == "houseView":
                                             footerGrid.cols_minimum = {1: button.size[0] * .7}
                                         elif form == "ter":
                                             footerGrid.cols_minimum = { # поджимаем футеры справа и слева
@@ -4227,8 +4231,10 @@ class RMApp(App):
                                     for b in range(len(footer[i])):
                                         if form == "ter" and self.fScale <= 1: limit = 5
                                         elif form == "ter": limit = 3
+                                        #elif form == "houseView": limit = 1
                                         else: limit = len(footer[i])-1
-                                        if count == 0: self.footerRadius = [0, 0, 0, rad * 1.1]
+                                        if limit == 1: self.footerRadius = [0, 0, rad * 1.1, rad * 1.1]
+                                        elif count == 0: self.footerRadius = [0, 0, 0, rad * 1.1]
                                         elif count < limit: self.footerRadius = [0, 0, 0, 0]
                                         else: self.footerRadius = [0, 0, rad * 1.1, 0]
                                         button.footers.append(FooterButton(text=str(footer[i][b]), parentIndex=i))
@@ -4427,22 +4433,24 @@ class RMApp(App):
                         if isinstance(self.disp.jump, int) and self.disp.jump < len(self.btn): # прокручиваем до выбранного элемента
                             self.scroll.scroll_to(widget=self.btn[self.disp.jump], padding=self.padding*10, animate=False)
 
-            if 0:#self.showUpdate: # один раз показываем уведомление о новой версии
-                if self.language == "ru": updatesFile = "new_ru.txt"
-                elif self.language == "uk": updatesFile = "new_uk.txt"
-                else: updatesFile = "new_en.txt"
-                with open(self.userPath + updatesFile, encoding="utf-8") as file:
-                    strings = file.read().splitlines()
-                message = ""
-                dot = f"[color={get_hex_from_color(self.pageTitleColor)}]•[/color]"
-                for row in strings: message += f"{dot} {row}\n"
-                self.popup(title=self.msg[11], message=message, heightK=1.5)
+            if self.showUpdate: # один раз показываем уведомление о новой версии
+                message = self.msg[7].replace("*", f"\n[color={get_hex_from_color(self.pageTitleColor)}]•[/color]")
+                self.popup(title=self.msg[11], message=message, heightK=(1.6 if self.desktop else 2))
                 self.showUpdate = False
+
+            if not self.desktop and not self.resources[0][1][8]:  # интересует версия для ПК?
+                def __ask(*args):
+                    self.resources[0][1][8] = 1
+                    self.save()
+                    self.dismissTopPopup(all=True)                    
+                    self.popup(popupForm="windows", message=self.msg[107],
+                               options=[self.button["yes"], self.button["no"]])
+                Clock.schedule_once(__ask, 2)#120)
 
         if progress and delay:
             self.showProgress()
-            Clock.schedule_once(lambda x: __continue(restart=restart), 0)
-        else: __continue(restart=restart)
+            Clock.schedule_once(__continue, 0)
+        else: __continue()
 
     def getLog(self, id=0, entry=None):
         """ Получает номер на элемент записи журнала и возвращает отдельные его элементы в виде строк """
@@ -4463,7 +4471,7 @@ class RMApp(App):
             self.clickedBtn = instance
             self.clickedBtnIndex = instance.id
 
-            try:
+            if 1:#try:
                 if self.button['porch_inv'] in instance.text and self.msg[6] in instance.text: # "создать подъезд"
                     formatLength = instance.text.index(self.msg[6])
                     text = instance.text[len(self.msg[6]) + formatLength : ]
@@ -4528,7 +4536,7 @@ class RMApp(App):
                 elif self.disp.form == "log": # журнал служения
                     self.logEntryView(instance.id)
 
-            except: return
+            #except: return
 
         if delay:
             Clock.schedule_once(__click, 0)
@@ -4723,6 +4731,7 @@ class RMApp(App):
             sort = self.house.porchesLayout
             sortTypes = [
                 f"[b]{self.msg[29]}[/b] {__dir(sort)}"  if sort[0] == "н" else self.msg[29],  # название
+                f"[b]{self.msg[31]}[/b] {__dir(sort)}"  if sort[0] == "и" else self.msg[31],  # интересующиеся
                 f"[b]{self.msg[230]}[/b] {__dir(sort)}" if sort[0] == "п" else self.msg[230], # посл. посещение
                 f"[b]{self.msg[38]}[/b] {__dir(sort)}"  if sort[0] == "р" else self.msg[38],  # размер
                 f"[b]{self.msg[37]}[/b] {__dir(sort)}"  if sort[0] == "з" else self.msg[37],  # заметка
@@ -4733,10 +4742,12 @@ class RMApp(App):
                     if instance.text == sortTypes[0]:
                         self.house.porchesLayout = "н^" if self.house.porchesLayout == "н" else "н"
                     elif instance.text == sortTypes[1]:
-                        self.house.porchesLayout = "п^" if self.house.porchesLayout == "п" else "п"
+                        self.house.porchesLayout = "и^" if self.house.porchesLayout == "и" else "и"
                     elif instance.text == sortTypes[2]:
-                        self.house.porchesLayout = "р^" if self.house.porchesLayout == "р" else "р"
+                        self.house.porchesLayout = "п^" if self.house.porchesLayout == "п" else "п"
                     elif instance.text == sortTypes[3]:
+                        self.house.porchesLayout = "р^" if self.house.porchesLayout == "р" else "р"
+                    elif instance.text == sortTypes[4]:
                         self.house.porchesLayout = "з^" if self.house.porchesLayout == "з" else "з"
                     self.houseView()
                     self.dropSortMenu.dismiss()
@@ -5403,14 +5414,6 @@ class RMApp(App):
                 self.interface.clear_widgets()
                 self.setParameters(reload=True)
                 self.createInterface()
-                if not self.desktop and self.resources[0][1][8] == 0:  # интересует версия для ПК?
-                    def __ask2(*args):
-                        self.dismissTopPopup(all=True)
-                        self.popup(popupForm="windows", message=self.msg[107],
-                                   options=[self.button["yes"], self.button["no"]])
-                        self.resources[0][1][8] = 1
-                        self.save()
-                    Clock.schedule_once(__ask2, 120)
                 self.setTheme(firstRun=False)
                 self.positive.show()
                 MyTextInput(initialize=True)
@@ -5462,7 +5465,7 @@ class RMApp(App):
                     jump=self.houses.index(self.house) if self.house is not None and self.house in self.houses else None
                 )
                 self.stack = ["ter"]
-                self.updateList(instance=instance, restart=restart, delay=delay,
+                self.updateList(instance=instance, delay=delay,
                                 progress=progress if progress is not None else self.buttonTer.progress)
                 self.updateMainMenuButtons()
 
@@ -6201,11 +6204,22 @@ class RMApp(App):
         self.mainListsize1 = self.mainList.size[1]
         self.dest = self.house.title
 
+        """options = [] # можно сделать футеры подъездов, пока везде закомментировано
+        footer = []
+        interested = 3
+        intIcon = self.button['contact']# if int(stats[1]) != 0 else icon("icon-user-o")
+        for porch in self.house.showPorches():
+            options.append(porch)
+            footer.append([
+                f"[color={self.interestColor}]{intIcon} {interested}[/color]",  # интересующиеся
+            ])"""
+
         self.disp.update(
             form="houseView",
             title=f"[b]{self.house.title}[/b]",
             nav=self.button['nav'] if self.house.type == "condo" else None,
-            options=self.house.showPorches(),
+            options=self.house.showPorches(), # options
+            #footer=footer,
             sort=self.button["sort"] if len(self.house.porches) > 0 else None,
             positive=f"{self.button['plus']} {self.msg[77 if self.house.type == 'condo' else 78]}",
             jump=self.house.porches.index(self.porch) if jump is None and self.porch is not None and \
@@ -7276,7 +7290,6 @@ class RMApp(App):
                 )
             )
         )
-
         self.launchTopPopup()
 
     def createEmojiPopup(self, instance=None, *args):
@@ -8522,17 +8535,16 @@ class RMApp(App):
         # Стандартное информационное окно либо запрос да/нет
 
         else:
-            size_hint = [.93, .35 * (self.fScale1_2)] if self.orientation == "v" else [.6, .4]
-            #text_size = Window.size[0] * size_hint[0] * .92, None
+            size_hint = [.93, .35 * self.fontScale()] if self.orientation == "v" else [.6, .4]
+            text_size = Window.size[0] * size_hint[0] * .93, None
             size_hint[1] *= heightK
             contentMain = BoxLayout(orientation="vertical")
             if checkboxText is not None: contentMain.add_widget(Widget())
             contentMain.add_widget(
-                MyLabelAligned(text=message, halign="left", valign="center", padding=self.padding*2,
-                               #text_size=text_size,
+                MyLabel(text=message, halign="left", valign="center", #padding=self.padding*2,
+                               text_size=text_size,
                                font_size=int(self.fontXS*self.fontScale(cap=1.3)), color=self.standardTextColor)
             )
-
             if checkboxText is not None: # задана галочка
                 self.popupCheckbox = FontCheckBox(text=checkboxText, halign="right", valign="bottom",
                                                   size_hint=(1, None),
@@ -8540,7 +8552,6 @@ class RMApp(App):
                 contentMain.add_widget(Widget(size_hint_y=.2))
                 contentMain.add_widget(self.popupCheckbox)
                 contentMain.add_widget(Widget(size_hint_y=.4))
-
             if len(options) > 0: # заданы кнопки
                 box = BoxLayout(size_hint_y=None)
                 self.confirmButtonPositive = PopupButton(text=options[0])
@@ -8552,10 +8563,8 @@ class RMApp(App):
                     self.confirmButtonNegative.bind(on_release=self.popupPressed)
                     box.add_widget(self.confirmButtonNegative)
                 contentMain.add_widget(box)
-
-        self.popups.insert(0,
-            MyPopup(title=title, content=contentMain, size_hint=size_hint, auto_dismiss=auto_dismiss))
-
+        self.popups.insert(0, MyPopup(title=title, content=contentMain,
+                                      size_hint=size_hint, auto_dismiss=auto_dismiss))
         self.launchTopPopup()
 
     def launchTopPopup(self):
