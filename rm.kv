@@ -136,7 +136,7 @@
     background_color: [1,1,1,0]
 
 <FirstCallButton1>: # запись
-    color: ([.22, .22, .22, 1] if app.mode == "dark" else app.linkColor) if self.state == 'normal' else app.titleColor
+    color: ([app.globalBGColor[0], app.globalBGColor[1], app.globalBGColor[2], 1] if app.mode == "dark" else app.linkColor) if self.state == 'normal' else app.titleColor
     canvas.before:
         Color:
             rgba: (app.scrollIconColor if app.mode == "dark" else app.buttonBackgroundColor) if self.state == 'normal' else app.roundButtonColorPressed

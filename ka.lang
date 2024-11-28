@@ -4,7 +4,7 @@
 ანგარიში
 ჟურნალი
 სადარბაზოს დამატება
-* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people. * All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On Windows, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
+* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people.* All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On PC, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
 არაფერი არ არის ნაპოვნი
 მონაცემთა ბაზის შეცდომა
 მსახურების ჟურნალი
@@ -218,7 +218,7 @@ Rocket Ministry-ის ვერსია Windows-ისთვის და Linu
 Შეამოწმოთ განახლებები:
 ვიწყებთ მსახურებას?
 ემოცია
-ახალი თვე დაიწყო, უკვე ჩააბარეთ თქვენი ანგარიში?
+ემოჯი არ არის
 კრედიტი
 ანგარიში - %s:
 შენიშვნა
@@ -342,3 +342,4 @@ Rocket Ministry-ს მონაცემები
 შეიყვანეთ თქვენი ყოველთვიური მოთხოვნა
 ტელეფონის ნომრის შეყვანის ფუნქცია შეიძლება გამორთოთ პარამეტრებში.
 მონაცემები წარმატებით აიტვირთა! თუ შედეგით არ ხართ კმაყოფილი, აღადგინეთ უახლესი სარეზერვო.
+ახალი თვე დაიწყო, უკვე ჩააბარეთ თქვენი ანგარიში?

@@ -4,7 +4,7 @@ Contactos
 Informe
 Diario
 Agregar entrada
-* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people. * All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On Windows, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
+* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people.* All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On PC, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
 No se ha encontrado nada
 Error en la base de datos
 Diario de servicio
@@ -218,7 +218,7 @@ Eliminar posición
 Revisa actualizaciones:
 Empezar ministerio?
 Icono
-¡Es un nuevo mes! ¿Ya ha entregado su informe?
+Sin iconos
 credito
 Informe para %s:
 Nota
@@ -342,3 +342,4 @@ Decidiré más tarde
 Ingrese su requisito mensual
 La función de ingreso de número de teléfono se puede desactivar en la configuración.
 ¡Datos cargados con éxito! Si no está satisfecho con el resultado, restaure la última copia de seguridad.
+¡Es un nuevo mes! ¿Ya ha entregado su informe?

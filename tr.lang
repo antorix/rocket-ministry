@@ -4,7 +4,7 @@ Kişiler
 Rapor
 Günlük
 Blok oluştur
-* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people. * All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On Windows, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
+* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people.* All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On PC, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
 Bir şey bulunmadı
 Sistem hatası
 Hizmet günlüğü
@@ -217,8 +217,8 @@ Bu konumdaki bir daire silinsin mi? Daire numarasının kendisi bozulmadan kalac
 Konumu sil
 Güncellemeleri kontrol et:
 Hizmet başlansın mı?
-Simgesi
-Yeni bir ay başladı! Raporunuzu gönderdiniz mi?
+Emoji
+Emoji yok
 kredi
 %s için rapor:
 Not
@@ -342,3 +342,4 @@ Daha sonra karar vereceğim
 Aylık gereksiniminizi girin
 Telefon numarası giriş özelliği ayarlardan devre dışı bırakılabilir.
 Veriler başarıyla yüklendi! Sonuçtan memnun kalmazsanız, en son yedeği geri yükleyin.
+Yeni bir ay başladı! Raporunuzu gönderdiniz mi?

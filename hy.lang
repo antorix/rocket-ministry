@@ -4,7 +4,7 @@
 Հաշվետվ․
 Ամսագիր
 Ստեղծել մուտք
-* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people. * All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On Windows, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
+* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people.* All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On PC, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
 Ոչինչ չգտնվեց
 Տվյալների բազայի սխալ
 Ծառայության Ամսագիր
@@ -218,7 +218,7 @@ Rocket Ministry Windows-ի և Linux-ի համար, փաստաթղթեր, սկզ�
 Ստուգել թարմացումները:
 Սկսե՞լ ծառայությունը:
 Զմայլիկներ
-Սկսվել է նոր ամիսը։ Դուք արդեն հանձնե՞լ եք հաշվետվությունը։
+առանց էմոջիի
 Կրեդիտ
 %s-ի հաշվետվությունը.
 Նշում
@@ -342,3 +342,4 @@ Rocket Ministry տվյալները
 Մուտքագրեք ձեր ամսական պահանջը
 Հեռախոսահամարի մուտքագրման գործառույթը կարող է անջատվել կարգավորումներում:
 Տվյալները հաջողությամբ բեռնվեցին: Եթե արդյունքից գոհ չեք, վերականգնեք վերջին պահուստային պատճենը.
+Սկսվել է նոր ամիսը։ Դուք արդեն հանձնե՞լ եք հաշվետվությունը։
