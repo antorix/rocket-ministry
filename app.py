@@ -5,7 +5,7 @@ from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
 Version = "2.17.000"
-RCNumber = "RC8"
+RCNumber = "RC9"
 
 try: # на ПК проверяем версию Kivy и обновляем при необходимости
     from subprocess import check_call
@@ -2824,7 +2824,8 @@ class ColorStatusButton(Button):
                     break
             RM.save()
             status2 = self.status
-            if status1 == "1" and status2 != "1": # если статус изменился со светло-зеленого на другой, удаляем из контактов
+            if RM.allContacts is not None and status1 == "1" and status2 != "1":
+                # если статус изменился со светло-зеленого на другой, удаляем из контактов
                 flat = RM.flat
                 f = RM.porch.flats.index(flat)
                 p = RM.house.porches.index(RM.porch)
