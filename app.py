@@ -9318,21 +9318,24 @@ class RMApp(App):
                 self.popup(message=self.msg[133])
 
         elif file: # экспорт в локальный файл на устройстве
+            def __replaceCharacters(string):
+                """ Заменяем недопустимые символы в названии участка на пробел """
+                string = string.replace("/", " ")
+                string = string.replace("\\", " ")
+                string = string.replace("\"", " ")
+                string = string.replace(":", " ")
+                string = string.replace("*", " ")
+                string = string.replace("?", " ")
+                string = string.replace("<", " ")
+                string = string.replace(">", " ")
+                string = string.replace("|", " ")
+                return string
             if self.desktop:
                 try:
                     from tkinter import filedialog
                     folder = filedialog.askdirectory()
                     if folder == "" or len(folder) == 0: return # пользователь отменил экспорт
-                    filename = folder + f"/{self.msg[251] if ter is None else ter.title}.txt"
-                    filename = filename.replace("/", " ") # заменяем недопустимые символы
-                    filename = filename.replace("\\", " ")
-                    filename = filename.replace(":", " ")
-                    filename = filename.replace("*", " ")
-                    filename = filename.replace("?", " ")
-                    filename = filename.replace("\"", " ")
-                    filename = filename.replace("<", " ")
-                    filename = filename.replace(">", " ")
-                    filename = filename.replace("|", " ")
+                    filename = folder + f"/{self.msg[251] if ter is None else __replaceCharacters(ter.title)}.txt"
                     with open(filename, "w") as file: json.dump(output, file)
                 except:
                     self.dprint("Экспорт в файл не удался.")
@@ -9342,7 +9345,7 @@ class RMApp(App):
             elif platform == "android":
                 filename = os.path.join(
                     SharedStorage().get_cache_dir(),
-                    f"{self.msg[251] if ter is None else ter.title}.txt")
+                    f"{self.msg[251] if ter is None else __replaceCharacters(ter.title)}.txt")
                 with open(filename, "w") as file: json.dump(output, file)
                 shared_file = SharedStorage().copy_to_shared(private_file=filename) # копируем в папку "Документы" на телефоне
                 self.popup(message=self.msg[253])
