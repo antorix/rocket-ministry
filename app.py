@@ -5,7 +5,7 @@ from sys import argv
 Devmode = 1 if "dev" in argv else 0
 Mobmode = 1 if "mob" in argv else 0
 Version = "2.17.000"
-RCNumber = "RC7"
+RCNumber = "RC8"
 
 try: # на ПК проверяем версию Kivy и обновляем при необходимости
     from subprocess import check_call
@@ -717,27 +717,27 @@ class Flat(object):
         if self.status == "":
             string = "{ }"
             value = 9
-        elif self.status[0] == "0":
-            string = "{0}"
-            value = 6 # value нужно для сортировки квартир по статусу
         elif self.status[0] == "1":
             string = "{1}"
-            value = 0
+            value = 1
         elif self.status[0] == "2":
             string = "{2}"
-            value = 1
+            value = 2
         elif self.status[0] == "3":
             string = "{3}"
-            value = 2
+            value = 3
         elif self.status[0] == "4":
             string = "{4}"
-            value = 3
+            value = 4
         elif self.status[0] == "?":
             string = "{?}"
             value = 10
         elif self.status[0] == "5":
             string = "{5}"
-            value = 7
+            value = 5
+        elif self.status[0] == "0":
+            string = "{0}"
+            value = 6 # value нужно для сортировки квартир по статусу
         else:
             string = "{ }"
             value = 9
@@ -891,11 +891,9 @@ class Report(object):
         """
         hours = self.hours + (self.credit if RM.settings[0][2] else 0) # часов в этом месяце
         gap = hours - float(time.strftime("%d", time.localtime())) * RM.settings[0][3] / ut.days()
-        #gap_str = ""
-        #elif gap >= 0: gap_str = " +%s" % ut.timeFloatToHHMM(gap)
-        #else: gap_str = " -%s" % ut.timeFloatToHHMM(-gap)
         curDay = float(time.strftime("%d", time.localtime())) # этот день
         daysLeft = ut.days() - curDay # осталось дней в месяце
+        if daysLeft == 0: daysLeft = 1 # чтобы не делить на ноль
         if RM.settings[0][3] > 0:
             hoursLeft = RM.settings[0][3] - hours # осталось послужить в месяце
             averageLeft = hoursLeft / daysLeft # среднее число часов, которое осталось служить каждый день
@@ -5563,6 +5561,7 @@ class RMApp(App):
                                 box.footer1 = box.children[1].children[2].children[1]
                                 box.footer2 = box.children[1].children[2].children[0]
                                 box.note = nBtn
+                                note = box.note
                             elif deleteNote:
                                 box = self.cachedContacts[c]
                                 box.remove_widget(box.note)
@@ -5571,9 +5570,17 @@ class RMApp(App):
                                 box.text = box.scrollButton.text
                                 box.footer1 = box.children[0].children[2].children[1]
                                 box.footer2 = box.children[0].children[2].children[0]
-                                box.note = NoteButton()
+                                box.note = note = NoteButton()
                             else:
-                                self.cachedContacts[c].note.text = f"[i]{noteText}[/i]"
+                                note = self.cachedContacts[c].note
+                                note.text = f"[i]{noteText}[/i]"
+
+                            note.texture_update() # подгон размера (так же, как в rm)
+                            note.ratio = .17 if self.scrollWidget.cols > 1 else .35
+                            oversize = note.texture_size[0] / (self.mainList.width * note.ratio)
+                            if oversize > 1:
+                                tl = len(note.text)
+                                note.text = note.text[:int(tl / oversize) - 1]
 
             if self.cachedContacts is None:
                 options = []
@@ -9317,10 +9324,19 @@ class RMApp(App):
                     folder = filedialog.askdirectory()
                     if folder == "" or len(folder) == 0: return # пользователь отменил экспорт
                     filename = folder + f"/{self.msg[251] if ter is None else ter.title}.txt"
+                    filename = filename.replace("/", " ") # заменяем недопустимые символы
+                    filename = filename.replace("\\", " ")
+                    filename = filename.replace(":", " ")
+                    filename = filename.replace("*", " ")
+                    filename = filename.replace("?", " ")
+                    filename = filename.replace("\"", " ")
+                    filename = filename.replace("<", " ")
+                    filename = filename.replace(">", " ")
+                    filename = filename.replace("|", " ")
                     with open(filename, "w") as file: json.dump(output, file)
                 except:
                     self.dprint("Экспорт в файл не удался.")
-                    if folder != "": self.popup(message=self.msg[308])
+                    self.popup(message=self.msg[308])
                 else: self.popup(message=self.msg[252] % filename)
 
             elif platform == "android":
