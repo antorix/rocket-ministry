@@ -4,11 +4,11 @@ Contacts
 Report
 Log
 Add entrance
-* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people.* All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On PC, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
-Nothing found
-Database error
+App updated!
+What's new:
+* Extra color square on the apartment (optional, see settings).* Smoother rendering of many elements on PC.
 Ministry log
-App Updated!
+Nothing found
 Add house(s)
 Press %s to return the entrance grid to its original position.
 Territory:
@@ -343,3 +343,4 @@ Enter your monthly requirement
 The phone number input feature can be disabled in the settings.
 Data successfully loaded! If you are not satisfied with the result, restore the latest backup.
 It's a new month! Have you turned in your report already?
+Extra color square on appartment

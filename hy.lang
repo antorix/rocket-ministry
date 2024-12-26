@@ -4,11 +4,11 @@
 Հաշվետվ․
 Ամսագիր
 Ստեղծել մուտք
-* Redesign of all pop-up windows.* Redesign of the unvisited apartment menu.* Sorting entrances and streets by the number of interested people.* All types of sorting now work in both directions.* Frequently used icons are displayed above the general list.* A few more new icons.* New dark theme by default: "Graphite".* For pioneers, the "Report" section shows the average number of hours per day for the current month.* The order of some colors in the apartment has changed.* On PC, a light or dark theme is automatically detected on first launch.* New settings.* Bug fixes.
-Ոչինչ չգտնվեց
-Տվյալների բազայի սխալ
-Ծառայության Ամսագիր
 Հավելվածը թարմացվել է!
+Ինչ նորություն կա:
+* Extra color square on the apartment (optional, see settings).* Smoother rendering of many elements on PC.
+Ծառայության Ամսագիր
+Ոչինչ չգտնվեց
 Ավելացնել տուն(ներ)
 Սեղմեք %s՝ մուտքի պատկերը իր սկզբնական դիրքը վերադարձնելու համար:
 Տարածք.
@@ -343,3 +343,4 @@ Rocket Ministry տվյալները
 Հեռախոսահամարի մուտքագրման գործառույթը կարող է անջատվել կարգավորումներում:
 Տվյալները հաջողությամբ բեռնվեցին: Եթե արդյունքից գոհ չեք, վերականգնեք վերջին պահուստային պատճենը.
 Սկսվել է նոր ամիսը։ Դուք արդեն հանձնե՞լ եք հաշվետվությունը։
+Լրացուցիչ գունավոր քառակուսի բնակարանում
