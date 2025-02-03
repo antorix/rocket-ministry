@@ -197,17 +197,12 @@
     color: app.linkColor if self.state=='normal' else app.titleColor
     background_color: 0,0,0,0
     text_size: self.size
-    smooth: self.smooth
     canvas.before:
         Color:
             rgba: [0,0,0,0] if self.state=='normal' else ([1, 1, 1, .5] if app.mode == "light" else (app.popupBGColorPressed if app.theme == "3D" else app.roundButtonColorPressed))
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size if not self.smooth else (0, 0)
-            radius: app.getRadius(rad=200, instance=self)[1]
         SmoothRoundedRectangle:
             pos: self.pos
-            size: self.size if self.smooth else (0, 0)
+            size: self.size
             radius: app.getRadius(rad=200, instance=self)[1]
 
 <PhoneCallButton>:
@@ -293,7 +288,7 @@
             pos: self.size[0]+self.pos[0] - (self.size[0]*self.size[1])**self.k*app.fScale - 1, self.pos[1] + 2
             size: (0,0) if not app.floors else ( (self.size[0]*self.size[1]*self.squareK)**self.k*app.fScale, (self.size[0]*self.size[1]*self.squareK)**self.k*app.fScale )
             radius: app.flatButtonColor3Radius
-        RoundedRectangle: # цветной квадратик на списке
+        SmoothRoundedRectangle: # цветной квадратик на списке
             pos: self.size[0]+self.pos[0] - ((self.size[0]*self.size[1])**self.k*app.fScale) - 1, self.pos[1] + 2
             size: (0,0) if app.floors else ( (self.size[0]*self.size[1]*self.squareK)**self.k*app.fScale, (self.size[0]*self.size[1]*self.squareK)**self.k*app.fScale )
             radius: app.flatButtonColor3Radius
@@ -463,7 +458,7 @@
     canvas.before:
         Color:
             rgba: (app.noteLabelBackgroundColor if self.state=='normal' else (app.roundButtonColorPressed if app.mode == "light" else app.roundButtonColorPressed2)) if app.theme != "3D" else [0,0,0,0]
-        RoundedRectangle:
+        SmoothRoundedRectangle:
             pos: self.pos
             size: self.size if app.disp.form != "flatView" else (0,0)
             radius: self.radius

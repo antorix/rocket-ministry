@@ -1,12 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-Version = "2.17.002"
-Subversion = "RC2"
+Version = "2.17.003"
+Subversion = "RC1"
 
 """ НОВОЕ В ВЕРСИИ:
-* Дополнительный цветной квадратик на квартире (опционально, см. настройки).
-* Более гладкая отрисовка многих элементов на ПК.
 """
 
 DataFile = "data.jsn"
@@ -44,10 +42,10 @@ except: # ПК
     from sys import executable
     from importlib.metadata import version
     try:
-        if version("kivy") != "2.3.0": # версия kivy ниже нужной
-            check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.0'])
+        if version("kivy") != "2.3.1": # версия kivy ниже нужной
+            check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.1'])
     except ImportError as e: # kivy вообще не установлена, устанавливаем
-        try: check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.0'])
+        try: check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.1'])
         except: pass
     try:
         import requests
@@ -1123,15 +1121,6 @@ class Report(object):
 
 # Классы интерфейса
 
-class Interface(AnchorLayout):
-    """ Самый высший контейнер интерфейса, поднимается над клавиатурой при параметре TextInput.shrink = True.
-    На Android позволяет еще раз показать сплеш-скрин вместо пустого экрана. """
-    def __init__(self, rgba=[1, 1, 1, 1], image=True, *args, **kwargs):
-        self.anchor_y = "top"
-        self.rgba = rgba
-        self.image = 'presplash.png' if image else None
-        super(Interface, self).__init__(*args, **kwargs)
-
 class DisplayedList(object):
     """ Класс, описывающий содержимое и параметры списка, выводимого на RM.mainList """
     def __init__(self, message="", title="", form="", options=None, sort=None, details=None,
@@ -1435,7 +1424,6 @@ class MyTextInput(TextInput):
             self.background_disabled_normal = ""
         self.cursor_color = RM.titleColor if RM.mode == "light" else RM.standardTextColor
         self.cursor_color[3] = .9
-        #self.selection_color = RM.topButtonColor
         if color is not None:
             self.foreground_color = self.disabled_foreground_color = color
         else:
@@ -1604,6 +1592,10 @@ class MyTextInput(TextInput):
         """ Реагирование на ввод в реальном времени на некоторых формах """
         if RM.disp.form == "pCalc": # пионерский калькулятор
             RM.recalcServiceYear(allowSave=True)
+
+        elif "Details" in RM.disp.form:
+            row = len(RM.multipleBoxEntries) - 1
+            RM.clearBtn.disabled = True if RM.multipleBoxEntries[row].text == "" else False
 
         elif self.id == "quickPhone": # ввод телефона - показ или скрытие кнопки звонка
             if RM.quickPhone.text != "":
@@ -2325,7 +2317,6 @@ class RoundButtonClassic(Button):
 class PopupButton(Button):
     """ Кнопка на всплывающем окне """
     def __init__(self, text="", height=None, font_name=None, pos_hint=None, disabled=False, cap=True,
-                 smooth=True,
                  halign="center", font_size=None, size_hint_x=None, size_hint_y=None, forceSize=False, **kwargs):
         super(PopupButton, self).__init__()
         if not RM.desktop or forceSize:
@@ -2336,7 +2327,6 @@ class PopupButton(Button):
         self.padding = RM.padding
         self.halign = halign
         self.valign = "center"
-        self.smooth = smooth
         self.size_hint_y = size_hint_y
         self.disabled = disabled
         if size_hint_x is not None: self.size_hint_x = size_hint_x
@@ -2735,7 +2725,6 @@ class NoteButton(Button):
         super(NoteButton, self).__init__(*args, **kwargs)
         self.markup = True
         self.text = text.replace("\n", " • ")
-        if RM.disp.form == "flatView": self.text = f"[i]{self.text}[/i]"
         self.id = id
         self.color = RM.standardTextColor
         self.size_hint = None, None
@@ -3174,10 +3163,7 @@ class DatePicker(BoxLayout):
 
 class RMApp(App):
     def build(self):
-        self.interface = Interface(
-            rgba = [1, 1, 1, 1] if platform == "android" or Devmode else [0,0,0,0],
-            image = True if platform == "android" or Devmode else False
-        )
+        self.interface = AnchorLayout(anchor_y="top")
         def __start(*args):
             self.userPath = UserPath
             self.backupFolderLocation = BackupFolderLocation
@@ -5536,9 +5522,6 @@ class RMApp(App):
                 self.setTheme(firstRun=False)
                 self.positive.show()
                 MyTextInput(initialize=True)
-                self.interface.__init__(
-                    rgba=[self.globalBGColor[0], self.globalBGColor[1], self.globalBGColor[2], 1],
-                    image=False)
                 if platform == "win" and not Devmode:  # убираем консоль на Windows
                     import ctypes
                     ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
@@ -6853,19 +6836,21 @@ class RMApp(App):
                 textbox.add_widget(self.multipleBoxEntries[row])
                 grid.add_widget(textbox)
 
-            if multiline and not self.desktop: # добавляем кнопку очистки поля заметки/посещения (только на телефоне)
+            if multiline:# and not self.desktop: # добавляем кнопку очистки поля заметки/посещения (только на телефоне)
                 if self.theme != "3D":
-                    clearBtn = RoundButton(text=self.button['erase'], size_hint_x=None, size_hint_y=None,
+                    self.clearBtn = RoundButton(text=self.button['erase'], size_hint_x=None, size_hint_y=None,
+                                           disabled=True if self.multipleBoxEntries[row].text=="" else False,
                                            radius=[rad, 0, 0, 0], size=[height*1.2, height], pos_hint={"right": 1})
                 else:
-                    clearBtn = RetroButton(text=self.button['erase'], size_hint_x=None, size_hint_y=None,
-                                           size=[height*1.2, height], pos_hint={"right": 1})
+                    self.clearBtn = RetroButton(text=self.button['erase'], size_hint_x=None, size_hint_y=None,
+                                                disabled=True if self.multipleBoxEntries[row].text=="" else False,
+                                                size=[height*1.2, height], pos_hint={"right": 1})
                 def __clear(instance):
                     if self.multipleBoxEntries[row].text.strip() != "":
                         self.popup("deleteNote", message=self.msg[250],
                                    options=[self.button["yes"], self.button["no"]])
-                clearBtn.bind(on_release=__clear)
-                textbox.add_widget(clearBtn)
+                self.clearBtn.bind(on_release=__clear)
+                textbox.add_widget(self.clearBtn)
 
             if self.disp.form == "flatView" and self.multipleBoxLabels[row].text == self.msg[22]: # добавляем кнопки М и Ж
                 textbox2 = BoxLayout(orientation="vertical", size_hint=entrySize_hint, height=height*2+self.spacing*2,
@@ -7208,7 +7193,7 @@ class RMApp(App):
             size_hint_y *= self.fScale
             if self.bigLanguage: size_hint_y *= 1.25
             k = .95
-        elif icon == "header": # заметка-кнопка в виде закладки
+        elif icon == "header": # заметка в виде закладки сверху (NoteButton)
             color = get_hex_from_color(self.scrollIconColor)
             size_hint_y = None
             halign = "center" if self.disp.form == "flatView" else "left"
@@ -7236,7 +7221,7 @@ class RMApp(App):
                             background_color=background_color)
             tip.bind(on_release=self.hideDueWarnMessage)
         elif icon == "header":
-            tip = NoteButton(text=text, height=self.standardTextHeight)
+            tip = NoteButton(text=f"[i]{text}[/i]", height=self.standardTextHeight)
         elif icon == "info" or icon == "link":
             tip = MyLabelAligned(text=f"[ref=note][color={color}]{self.button[icon]}[/color] {text}[/ref]",
                           size_hint_y=size_hint_y, padding=[self.padding*8, 0],
@@ -7549,7 +7534,6 @@ class RMApp(App):
                 self.emojiGrid.rows = 14
                 for e in range(len(self.icons[:84])):
                     button = PopupButton(mode="light", text=self.icons[e], size_hint_y=None, height=h,
-                                         smooth=True if self.mode == "dark" else False,
                                          font_size=self.fontXXL, forceSize=True)
                     button.bind(on_release=__emojiClick)
                     self.emojiGrid.add_widget(button)
@@ -9013,9 +8997,6 @@ class RMApp(App):
             self.setTheme()
             self.showProgress(icon=self.button["spinner1"])
             self.terPressed(progress=True, restart=True, draw=False)
-            self.interface.__init__(
-                rgba=[self.globalBGColor[0], self.globalBGColor[1], self.globalBGColor[2], 1],
-                image=False)
         else: # полная перезагрузка приложения
             if platform == "android":
                 from kvdroid.tools import restart_app
