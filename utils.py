@@ -35,7 +35,7 @@ def shortenDate(longDate):
 def days():
     """ Returns number of days in current month """
     if time.strftime("%b", time.localtime()) == "Jan": return 31
-    elif time.strftime("%b", time.localtime()) == "Feb": return 30
+    elif time.strftime("%b", time.localtime()) == "Feb": return 28
     elif time.strftime("%b", time.localtime()) == "Mar": return 31
     elif time.strftime("%b", time.localtime()) == "Apr": return 30
     elif time.strftime("%b", time.localtime()) == "May": return 31

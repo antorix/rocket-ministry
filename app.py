@@ -1,10 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-Version = "2.17.003"
+Version = "2.17.004"
 Subversion = "RC1"
 
-""" НОВОЕ В ВЕРСИИ:
+"""
+НОВОЕ В ВЕРСИИ:
+* Создание новой резервной копии каждые 30 минут.
+
 """
 
 DataFile = "data.jsn"
@@ -3120,6 +3123,7 @@ class DatePicker(BoxLayout):
         for filler in range(self.date_cursor.isoweekday()-1):
             self.body.add_widget(MyLabel(text=""))
         while self.date_cursor.month == self.date.month:
+            RM.sortButtonRadius = [0,]
             date_label = SortListButton(text = str(self.date_cursor.day), size_hint_y=1)
             date_label.bind(on_press=partial(self.set_date, day=self.date_cursor.day))
             date_label.bind(on_release=self.pick)
@@ -4713,7 +4717,7 @@ class RMApp(App):
             )
             self.detailsButton.disabled = True
 
-        elif self.disp.form == "rep":
+        elif self.disp.form == "rep": # среднее оставшееся время в месяц
             self.popup(title=self.msg[247], message=self.msg[202])
 
         elif self.disp.form == "set": # Помощь
@@ -5516,6 +5520,7 @@ class RMApp(App):
                 self.rep.optimizeLog()
                 Window.bind(on_touch_move=self.window_touch_move)
                 Clock.schedule_interval(self.checkDate, 60)
+                Clock.schedule_interval(lambda x: self.save(backup=True), 1800) # резервирование каждые 30 мин.
                 self.interface.clear_widgets()
                 self.setParameters(softRestart=True)
                 self.createInterface()
@@ -7297,7 +7302,8 @@ class RMApp(App):
             self.bigBtnBox.padding =  pad0, pad0, pad0, 0
             phoneBox = RelativeLayout(size_hint=(.94, None), height=self.standardTextHeight*1.2, pos_hint=PH)
             self.quickPhone = MyTextInputPopup(id="quickPhone", onlyPadding=True, hint_text=self.msg[35],
-                                          text=self.flat.phone, multiline=False, wired_border=True,
+                                               text=self.flat.phone, multiline=False, wired_border=True,
+                                               focus=True if self.desktop else False,
                                                input_type="number" if not self.desktop else "text")
             phoneBox.add_widget(self.quickPhone)
             self.savePhoneBtn = ButtonInsideText(text=self.button["check"], pos_hint={"right": 1, "center_y": .5},
@@ -9281,7 +9287,7 @@ class RMApp(App):
         elif delete == True and not Devmode:
             files.sort()
             self.dprint("Урезаем резервные копии до лимита.")
-            limit = 10
+            limit = 20
             if len(files) > limit:  # лимит превышен, удаляем
                 extra = len(files) - limit
                 for i in range(extra):
