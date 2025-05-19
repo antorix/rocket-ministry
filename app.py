@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-Version = "2.17.004"
+Version = "2.17.006"
 Subversion = "RC1"
 
 """
 НОВОЕ В ВЕРСИИ:
-* Создание новой резервной копии каждые 30 минут.
+* Исправления и оптимизации. 
 
 """
 
@@ -31,7 +31,8 @@ try: # Android
     if os.path.exists(UserPath + DataFile): # делаем экстренную копию базы в кеш (выглядит как filesdata.jsn)
         try: shutil.copy(UserPath + DataFile, os.path.join(SharedStorage().get_cache_dir()))
         except: pass
-    BackupFolderLocation = os.path.join(SharedStorage().get_cache_dir(), "Backup/")  # папка рез. копий
+    #BackupFolderLocation = os.path.join(SharedStorage().get_cache_dir(), "Backup/")  # папка рез. копий
+    BackupFolderLocation = os.path.join(app_storage_path(), "Backup/")
     Devmode = Mobmode = 0
 
 except: # ПК
@@ -1539,6 +1540,9 @@ class MyTextInput(TextInput):
                         elif RM.settings[0][2] and self == RM.credit.input and RM.rep.credit != ut.timeHHMMToFloat(self.text):
                             RM.rep.credit = ut.timeHHMMToFloat(self.text)
                             RM.rep.saveReport(message=RM.rep.getLogEntry("credit"))
+                        if RM.settings[0][2]:  # если есть кредит, обновляем сумму часов
+                            RM.creditLabel.text = RM.msg[105] % RM.rep.getCurrentHours()[0]
+
                     except:
                         # проверка на правильность ввода времени, иначе показывается ошибка,
                         # а значение не сохраняется
@@ -1599,6 +1603,11 @@ class MyTextInput(TextInput):
         elif "Details" in RM.disp.form:
             row = len(RM.multipleBoxEntries) - 1
             RM.clearBtn.disabled = True if RM.multipleBoxEntries[row].text == "" else False
+
+            if RM.disp.form == "flatDetails": # перерисовка кнопки телефона по мере ввода телефона
+                RM.flat.phone = RM.multipleBoxEntries[1].text.strip()
+                RM.neutral.disabled = True if RM.flat.phone == "" else False
+                RM.neutral.text = RM.button["phone"] if RM.flat.phone == "" else RM.button["phone-square"]
 
         elif self.id == "quickPhone": # ввод телефона - показ или скрытие кнопки звонка
             if RM.quickPhone.text != "":
@@ -2831,6 +2840,8 @@ class Counter(AnchorLayout):
                     else:
                         minutes = self.input.text[self.input.text.index(":") + 1:]
                         self.input.text = "%d:%s" % (int(hours) - 1, minutes)
+                    if RM.settings[0][2]:  # если есть кредит, обновляем сумму часов
+                        RM.creditLabel.text = RM.msg[105] % RM.rep.getCurrentHours()[0]
             except: pass
 
         self.btnDown.bind(on_release=__countDown)
@@ -3204,6 +3215,7 @@ class RMApp(App):
             self.setTheme()
             self.createInterface()
             self.terPressed(progress=True, restart=True)
+            Clock.schedule_interval(lambda x: self.save(backup=True), 1800)  # резервирование каждые 30 мин.
         Clock.schedule_once(__start, .01)
         return self.interface
 
@@ -5520,7 +5532,6 @@ class RMApp(App):
                 self.rep.optimizeLog()
                 Window.bind(on_touch_move=self.window_touch_move)
                 Clock.schedule_interval(self.checkDate, 60)
-                Clock.schedule_interval(lambda x: self.save(backup=True), 1800) # резервирование каждые 30 мин.
                 self.interface.clear_widgets()
                 self.setParameters(softRestart=True)
                 self.createInterface()
@@ -6175,7 +6186,8 @@ class RMApp(App):
             self.clickedInstance.update(self.flat)
             self.flat = tempFlat
         if platform == "android":
-            try: plyer.call.makecall(tel=self.flat.phone)
+            try: plyer.call.makecall(tel=self.flat.phone if self.disp.form != "flatDetails" \
+                else self.multipleBoxEntries[1].text.strip())
             except: request_permissions([Permission.CALL_PHONE])
         elif self.desktop:
             Clipboard.copy(self.flat.phone)
