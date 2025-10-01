@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 Version = "2.17.007"
-Subversion = "RC4"
+Subversion = "RC5"
 
 """
 НОВОЕ В ВЕРСИИ:
 * Исправления и оптимизации.
 * Временное отключение автозавершения на клавиатуре до решения бага № 9167 (см. документацию) с возможностью включить его обратно в настройках.
 * Новая версия Kivy и поддержка Android API 35.
-
 """
 
 DataFile = "data.jsn"
@@ -1364,7 +1363,7 @@ class MyTextInputCutCopyPaste(Bubble):
 
 class MyTextInput(TextInput):
     def __init__(self, multiline=False, size_hint_y=1, size_hint_x=1, hint_text="", pos_hint = {"center_y": .5},
-                 text="", disabled=False, input_type="null", width=0, height=None, time=False, popup=False,
+                 text="", disabled=False, input_type=None, width=0, height=None, time=False, popup=False,
                  halign="left", valign="center", focus=False, color=None, limit=99999, onlyPadding=False,
                  font_size=None, fontRecalc=False, initialize=False, wired_border=True, rounded=False,
                  shrink=False, id=None, specialFont=False, background_color=None, background_disabled_normal=None,
@@ -1404,9 +1403,7 @@ class MyTextInput(TextInput):
         self.wired_border = wired_border
         self.rounded = rounded
         self.width = width
-        self.input_type_initial = input_type
-        self.input_type = self.input_type_initial
-        #self.keyboard_suggestions = False
+        self.input_type = RM.textEnterMode if input_type is None else input_type
         self.text = f"{text}"
         self.disabled = disabled
         self.blockPositivePress = blockPositivePress
@@ -1481,7 +1478,6 @@ class MyTextInput(TextInput):
                 if value:
                     Window.softinput_mode = ""
                     def __showKeyboard(*args):
-                        self.input_type = self.input_type_initial
                         self.show_keyboard()
                         RM.globalFrame.size_hint_y = None
                         RM.globalFrame.height = Window.height - RM.keyboardHeight() - RM.standardTextHeight
@@ -1515,7 +1511,6 @@ class MyTextInput(TextInput):
                     Clock.schedule_once(__hideKeyboard, .02)
         else:
             if value:
-                self.input_type = self.input_type_initial
                 Clock.schedule_once(lambda x: self.show_keyboard(), 0)
 
             else: # сохранение некоторых видов данных в полях ввода при простом дефокусе
@@ -1602,20 +1597,8 @@ class MyTextInput(TextInput):
     def on_touch_down(self, touch):
         super().on_touch_down(touch)
 
-    """def keyboard_on_key_down(self, window, keycode, text, modifiers):        
-        if keycode is not None and keycode[1] == 'backspace':
-            if self.input_type != "null":
-                self.focus = False
-                self.focus = True
-            self.input_type = "null"
-            self.do_backspace()
-            return True  # Do nothing
-        else:
-            return super().keyboard_on_key_down(window, keycode, text, modifiers)"""
-
     def keyboard_on_key_up(self, window=None, keycode=None):
         """ Реагирование на ввод в реальном времени на некоторых формах """
-
         if RM.disp.form == "pCalc": # пионерский калькулятор
             RM.recalcServiceYear(allowSave=True)
 
@@ -6708,8 +6691,8 @@ class RMApp(App):
             if multiline: self.inputBoxEntry.size_hint_y = 1
 
     def createMultipleInputBox(self, form=None, title=None, options=[], defaults=[], multilines=[], disabled=[],
-                               input_type=None,
-                               focus="", positive=None, sort=None, details=None, note=None, neutral=None, nav=None):
+                               input_type=None, focus="", positive=None, sort=None, details=None, note=None,
+                               neutral=None, nav=None):
         """ Форма ввода данных с несколькими полями """
         if form is None: form = self.mainList
         form.clear_widgets()
