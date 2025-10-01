@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 Version = "2.17.007"
-Subversion = "RC2"
+Subversion = "RC3"
 
 """
 НОВОЕ В ВЕРСИИ:
@@ -1448,8 +1448,6 @@ class MyTextInput(TextInput):
                     RM.allowCharWarning = True
                 Clock.schedule_once(__turnToTrue, 5)
             return
-        #elif self.input_type == "null":
-        #    return super().insert_text(char, from_undo=from_undo)
         elif self.input_type != RM.textEnterMode: # цифры и даты
             if f"{RM.button['arrow']} {RM.msg[16]}" in RM.pageTitle.text : # дата
                 if char.isnumeric():
@@ -4555,7 +4553,6 @@ class RMApp(App):
                             self.scroll.scroll_to(widget=self.btn[self.disp.jump], padding=self.padding*10, animate=False)
 
             if self.showUpdate: # один раз показываем уведомление о новой версии
-                print(self.msg[9])
                 message = f"{self.msg[8]}\n"
                 message += self.msg[9].replace("*", f"\n[color={get_hex_from_color(self.pageTitleColor)}]•[/color]")
                 self.popup(title=self.msg[7], message=message)#, heightK=(1.6 if self.desktop else 2))
@@ -5318,7 +5315,7 @@ class RMApp(App):
 
             elif self.disp.form == "log": # создание записи журнала
                 self.newLog = MyTextInput(id="newLog", focus=True, size_hint_y=None,
-                                          height=self.standardTextHeight*1.3)
+                                          input_type=self.textEnterMode, height=self.standardTextHeight*1.3)
                 if self.scroll in self.mainList.children:
                     topItemIndex = len(self.scrollWidget.children)-1
                     topItemPinned = self.scrollWidget.children[topItemIndex].children[1].pinned
@@ -8660,7 +8657,7 @@ class RMApp(App):
             contentMain.add_widget(a1)
             contentMain.add_widget(Widget(size_hint_y=None, height=self.standardTextHeight))
             tag = MyTextInput(id="serviceTag", text=self.serviceTag, hint_text=RM.msg[329], multiline=False,
-                              popup=True, size_hint_y=None)
+                              input_type=self.textEnterMode, popup=True, size_hint_y=None)
             a1.add_widget(tag)
             grid = GridLayout(rows=1, cols=3, size_hint_y=.6, padding=self.padding, spacing=self.spacing)
             contentMain.add_widget(grid)
