@@ -6,7 +6,7 @@
 სადარბაზოს დამატება
 აპლიკაცია განახლდა!
 რა არის ახალი:
-* Fixes and optimizations.
+* Fixes and optimizations.* Android: Temporarily disabled keyboard auto-completion until bug #9167 is resolved (see documentation) with the option to turn it back on in the settings.* New version of Kivy and support for Android API 35.
 მსახურების ჟურნალი
 არაფერი არ არის ნაპოვნი
 სახლ(ებ)ის დამატება
@@ -344,3 +344,4 @@ Rocket Ministry-ს მონაცემები
 მონაცემები წარმატებით აიტვირთა! თუ შედეგით არ ხართ კმაყოფილი, აღადგინეთ უახლესი სარეზერვო.
 ახალი თვე დაიწყო, უკვე ჩააბარეთ თქვენი ანგარიში?
 დამატებითი ფერის კვადრატი ბინაში
+კლავიატურის ავტომატური დასრულება (შეცდომები შესაძლებელია!)

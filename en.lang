@@ -6,7 +6,7 @@ Log
 Add entrance
 App updated!
 What's new:
-* Fixes and optimizations.
+* Fixes and optimizations.* Android: Temporarily disabled keyboard auto-completion until bug #9167 is resolved (see documentation) with the option to turn it back on in the settings.* New version of Kivy and support for Android API 35.
 Ministry log
 Nothing found
 Add house(s)
@@ -344,3 +344,4 @@ The phone number input feature can be disabled in the settings.
 Data successfully loaded! If you are not satisfied with the result, restore the latest backup.
 It's a new month! Have you turned in your report already?
 Extra color square on appartment
+Keyboard auto-completion (BUGS ARE POSSIBLE!)

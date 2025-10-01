@@ -6,7 +6,7 @@ Diario
 Agregar entrada
 ¡Aplicación actualizada!
 ¿Qué hay de nuevo?
-* Fixes and optimizations.
+* Fixes and optimizations.* Android: Temporarily disabled keyboard auto-completion until bug #9167 is resolved (see documentation) with the option to turn it back on in the settings.* New version of Kivy and support for Android API 35.
 Diario de servicio
 No se ha encontrado nada
 Agregar casa(s)
@@ -344,3 +344,4 @@ La función de ingreso de número de teléfono se puede desactivar en la configu
 ¡Datos cargados con éxito! Si no está satisfecho con el resultado, restaure la última copia de seguridad.
 ¡Es un nuevo mes! ¿Ya ha entregado su informe?
 Cuadro de color extra en el apartamento
+Autocompletado del teclado (¡LOS ERRORES SON POSIBLES!)

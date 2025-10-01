@@ -6,7 +6,7 @@
 Ստեղծել մուտք
 Հավելվածը թարմացվել է!
 Ինչ նորություն կա:
-* Fixes and optimizations.
+* Fixes and optimizations.* Android: Temporarily disabled keyboard auto-completion until bug #9167 is resolved (see documentation) with the option to turn it back on in the settings.* New version of Kivy and support for Android API 35.
 Ծառայության Ամսագիր
 Ոչինչ չգտնվեց
 Ավելացնել տուն(ներ)
@@ -344,3 +344,4 @@ Rocket Ministry տվյալները
 Տվյալները հաջողությամբ բեռնվեցին: Եթե արդյունքից գոհ չեք, վերականգնեք վերջին պահուստային պատճենը.
 Սկսվել է նոր ամիսը։ Դուք արդեն հանձնե՞լ եք հաշվետվությունը։
 Լրացուցիչ գունավոր քառակուսի բնակարանում
+Ստեղնաշարի ավտոմատ լրացում (սխալները հնարավոր են!)

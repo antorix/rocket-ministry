@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-Version = "2.17.006"
-Subversion = "RC1"
+Version = "2.17.007"
+Subversion = "RC2"
 
 """
 НОВОЕ В ВЕРСИИ:
-* Исправления и оптимизации. 
+* Исправления и оптимизации.
+* Временное отключение автозавершения на клавиатуре до решения бага № 9167 (см. документацию) с возможностью включить его обратно в настройках.
+* Новая версия Kivy и поддержка Android API 35.
 
 """
 
@@ -31,7 +33,6 @@ try: # Android
     if os.path.exists(UserPath + DataFile): # делаем экстренную копию базы в кеш (выглядит как filesdata.jsn)
         try: shutil.copy(UserPath + DataFile, os.path.join(SharedStorage().get_cache_dir()))
         except: pass
-    #BackupFolderLocation = os.path.join(SharedStorage().get_cache_dir(), "Backup/")  # папка рез. копий
     BackupFolderLocation = os.path.join(app_storage_path(), "Backup/")
     Devmode = Mobmode = 0
 
@@ -1363,15 +1364,15 @@ class MyTextInputCutCopyPaste(Bubble):
 
 class MyTextInput(TextInput):
     def __init__(self, multiline=False, size_hint_y=1, size_hint_x=1, hint_text="", pos_hint = {"center_y": .5},
-                 text="", disabled=False, input_type="text", width=0, height=None, time=False, popup=False,
+                 text="", disabled=False, input_type="null", width=0, height=None, time=False, popup=False,
                  halign="left", valign="center", focus=False, color=None, limit=99999, onlyPadding=False,
                  font_size=None, fontRecalc=False, initialize=False, wired_border=True, rounded=False,
                  shrink=False, id=None, specialFont=False, background_color=None, background_disabled_normal=None,
                  blockPositivePress=False, *args, **kwargs):
         super(MyTextInput, self).__init__(*args, **kwargs)
+        self.multiline = multiline
         if RM.specialFont is not None or specialFont: self.font_name = RM.differentFont
         if background_disabled_normal is not None: self.background_disabled_normal = background_disabled_normal
-        self.multiline = multiline
         self.height = height if height is not None else RM.standardTextHeight*1.2
         k1, k2 = (.4, .3) if RM.desktop else (.5, .25)
         if initialize: # только определение шрифта один раз при запуске
@@ -1403,7 +1404,9 @@ class MyTextInput(TextInput):
         self.wired_border = wired_border
         self.rounded = rounded
         self.width = width
-        self.input_type = input_type
+        self.input_type_initial = input_type
+        self.input_type = self.input_type_initial
+        #self.keyboard_suggestions = False
         self.text = f"{text}"
         self.disabled = disabled
         self.blockPositivePress = blockPositivePress
@@ -1414,6 +1417,7 @@ class MyTextInput(TextInput):
         self.keyboard_mode = "managed" if not RM.desktop else "auto"
         self.popup = popup
         self.focus = focus
+        self.textAfterDefocus = 0
         Window.softinput_mode = "below_target"
         self.time = time
         self.write_tab = False
@@ -1444,7 +1448,9 @@ class MyTextInput(TextInput):
                     RM.allowCharWarning = True
                 Clock.schedule_once(__turnToTrue, 5)
             return
-        elif self.input_type != "text": # цифры и даты
+        #elif self.input_type == "null":
+        #    return super().insert_text(char, from_undo=from_undo)
+        elif self.input_type != RM.textEnterMode: # цифры и даты
             if f"{RM.button['arrow']} {RM.msg[16]}" in RM.pageTitle.text : # дата
                 if char.isnumeric():
                     return super().insert_text(char, from_undo=from_undo)
@@ -1453,7 +1459,7 @@ class MyTextInput(TextInput):
             elif char.isnumeric(): return super().insert_text(char, from_undo=from_undo) # цифры
             elif self.time: # часы - превращаем все символы кроме цифр в двоеточия
                 return super().insert_text(":", from_undo=from_undo)
-        else: # обычный текст - с капитализацией
+        else: # обычный текст - с капитализацией            
             def __capitalize():
                 string = self.text[: self.cursor_index()].strip()
                 l = len(string) - 1
@@ -1477,6 +1483,7 @@ class MyTextInput(TextInput):
                 if value:
                     Window.softinput_mode = ""
                     def __showKeyboard(*args):
+                        self.input_type = self.input_type_initial
                         self.show_keyboard()
                         RM.globalFrame.size_hint_y = None
                         RM.globalFrame.height = Window.height - RM.keyboardHeight() - RM.standardTextHeight
@@ -1484,7 +1491,7 @@ class MyTextInput(TextInput):
                         RM.boxHeader.size_hint_y = 0
                         RM.color2Selector.pos[0] -= 1000
                         RM.color3Selector.pos[0] -= 1000
-                        RM.emojiSelector.pos[0] -= 1000
+                        RM.emojiSelector.pos[0]  -= 1000
                         RM.titleBox.size_hint_y = 0
                         for widget in RM.mainList.children: # определяем, сохраняем и скрываем кнопку заметки
                             if "NoteButton" in str(widget):
@@ -1509,11 +1516,13 @@ class MyTextInput(TextInput):
                             RM.mainList.add_widget(widget=self.note, index=len(RM.mainList.children))
                     Clock.schedule_once(__hideKeyboard, .02)
         else:
-            if value: Clock.schedule_once(lambda x: self.show_keyboard(), 0)
+            if value:
+                self.input_type = self.input_type_initial
+                Clock.schedule_once(lambda x: self.show_keyboard(), 0)
 
             else: # сохранение некоторых видов данных в полях ввода при простом дефокусе
 
-                if not RM.desktop and self.input_type == "text" and RM.correctKeyboardHeight is None:
+                if not RM.desktop and self.input_type == RM.textEnterMode and RM.correctKeyboardHeight is None:
                     # фиксируем правильную высоту клавиатуры на телефоне
                     result = RM.keyboardHeight()
                     RM.correctKeyboardHeight = result if result > 200 else None
@@ -1581,11 +1590,11 @@ class MyTextInput(TextInput):
                         Clock.schedule_once(lambda x: RM.popup(title=RM.msg[247], message=RM.msg[343]), .1)
                     RM.save()
 
-                if RM.desktop or self.input_type != "text" or RM.correctKeyboardHeight is not None:
+                if RM.desktop or self.input_type != RM.textEnterMode or RM.correctKeyboardHeight is not None:
                     self.hide_keyboard()
 
     def remove_focus_decorator(function):
-        """ Исправление клавиатурного бага """
+        """ Чтобы клавиатура переоткрывалась при переходе между текстовыми полями на одном экране """
         def wrapper(self, touch):
             if not self.collide_point(*touch.pos): self.focus = False
             function(self, touch)
@@ -1595,8 +1604,20 @@ class MyTextInput(TextInput):
     def on_touch_down(self, touch):
         super().on_touch_down(touch)
 
+    """def keyboard_on_key_down(self, window, keycode, text, modifiers):        
+        if keycode is not None and keycode[1] == 'backspace':
+            if self.input_type != "null":
+                self.focus = False
+                self.focus = True
+            self.input_type = "null"
+            self.do_backspace()
+            return True  # Do nothing
+        else:
+            return super().keyboard_on_key_down(window, keycode, text, modifiers)"""
+
     def keyboard_on_key_up(self, window=None, keycode=None):
         """ Реагирование на ввод в реальном времени на некоторых формах """
+
         if RM.disp.form == "pCalc": # пионерский калькулятор
             RM.recalcServiceYear(allowSave=True)
 
@@ -1622,22 +1643,16 @@ class MyTextInput(TextInput):
 
     def _show_cut_copy_paste(self, pos, win, parent_changed=False, mode='', pos_in_window=False, *l):
         """ Show a bubble with cut copy and paste buttons """
-        if not self.use_bubble:# or self.correctKeyboardHeight is None:
+        if not self.use_bubble:
             return
         if self.multiline: pos = self.pos
         bubble = self._bubble
         if bubble is None:
             self._bubble = bubble = MyTextInputCutCopyPaste(textinput=self)
-            self.fbind('parent', self._show_cut_copy_paste, pos,
-                       win, True)
-
+            self.fbind('parent', self._show_cut_copy_paste, pos, win, True)
             def hide_(*args):
                 return self._hide_cut_copy_paste(win)
-
-            self.bind(
-                focus=hide_,
-                cursor_pos=hide_,
-            )
+            self.bind(focus=hide_, cursor_pos=hide_,)
         else:
             win.remove_widget(bubble)
             if not self.parent:
@@ -2160,7 +2175,9 @@ class FontCheckBox(Button):
                 RM.updateSettings(scrollTo=self.setting)
             elif self.setting == RM.msg[346]:  # цветной квадратик в квартире
                 RM.settings[0][26] = self.active
-
+            elif self.setting == RM.msg[347]:  # автозавершение клавиатуры
+                RM.settings[0][27] = self.active
+                RM.updateSettings(scrollTo=self.setting)
             RM.save()
 
         elif RM.disp.form == "log": # галочка в журнале отчета
@@ -3239,15 +3256,14 @@ class RMApp(App):
         if self.settings[0][6] in self.languages.keys():
             self.language = self.settings[0][6]
         else: # определение языка устройства при первом запуске, либо по умолчанию английский
-            if platform == "android":
-                from kvdroid.tools.lang import device_lang
-                DL = device_lang()
-            elif platform == "win":
+            if platform == "win":
                 import locale
-                locale.getdefaultlocale()
-                import ctypes
-                windll = ctypes.windll.kernel32
-                DL = locale.windows_locale[windll.GetUserDefaultUILanguage()][0:2]
+                locale = locale.getdefaultlocale()[0]
+                DL = locale[0:2]
+            elif platform == "android":
+                config = mActivity.getResources().getConfiguration()
+                locale = config.locale.toString()
+                DL = locale[0:2]
             elif platform == "linux":
                 try:    DL = os.environ['LANG'][0:2]
                 except: DL = "en"
@@ -3266,10 +3282,11 @@ class RMApp(App):
                 self.msg = file.read().splitlines()
             self.msg.insert(0, "")
         except:
-            from tkinter import messagebox
-            messagebox.showerror(
-                title="Error",
-                message="Не найден языковой файл! Переустановите приложение.\n\nLanguage file not found! Please re-install program.")
+            if self.desktop:
+                from tkinter import messagebox
+                messagebox.showerror(
+                    title="Error",
+                    message="Не найден языковой файл! Переустановите приложение.\n\nLanguage file not found! Please re-install program.")
             self.stop()
 
         Clock.unschedule(self.updateTimer)
@@ -3311,6 +3328,7 @@ class RMApp(App):
         self.descrColWidth = .38  # ширина левого столбца таблицы (подписи полей), но кроме настроек
         self.spacing = self.thickness()[0] * 2
         self.padding = self.thickness()[0] * 2.5
+        self.textEnterMode = "text" if self.settings[0][27] else "null" # null = отключение автозавершения клавиатуры
         self.emoji = {"check": "\u2611"}  # галочка для отчета
         if self.settings[0][21] != "Google" and self.settings[0][21] != "Yandex" and self.settings[0][21] != "Яндекс"\
                 and self.settings[0][21] != "2GIS" and self.settings[0][21] != "2ГИС":
@@ -4537,19 +4555,11 @@ class RMApp(App):
                             self.scroll.scroll_to(widget=self.btn[self.disp.jump], padding=self.padding*10, animate=False)
 
             if self.showUpdate: # один раз показываем уведомление о новой версии
+                print(self.msg[9])
                 message = f"{self.msg[8]}\n"
                 message += self.msg[9].replace("*", f"\n[color={get_hex_from_color(self.pageTitleColor)}]•[/color]")
                 self.popup(title=self.msg[7], message=message)#, heightK=(1.6 if self.desktop else 2))
                 self.showUpdate = False
-
-            if 0: #not self.desktop and not self.resources[0][1][8]:  # интересует версия для ПК?
-                def __ask(*args):
-                    self.resources[0][1][8] = 1
-                    self.save()
-                    self.dismissTopPopup(all=True)
-                    self.popup(popupForm="windows", message=self.msg[107],
-                               options=[self.button["yes"], self.button["no"]])
-                Clock.schedule_once(__ask, 10)
 
         if progress and delay:
             self.showProgress()
@@ -5172,7 +5182,7 @@ class RMApp(App):
                             self.inputBoxText.text = self.msg[64]
                             self.textbox.remove_widget(self.inputBoxEntry2)
                             self.inputBoxEntry.hint_text = self.hint
-                            self.inputBoxEntry.input_type = "text"
+                            self.inputBoxEntry.input_type = self.textEnterMode
                     self.createInputBox(
                         title=None,# не меняется
                         message=self.msg[64],
@@ -6008,6 +6018,7 @@ class RMApp(App):
                     "{}" + self.msg[346], # цветной квадратик в квартире
                     "{}" + self.msg[188], # ограничение высоты записи посещения
                     "{}" + (self.msg[87] if not self.desktop else self.msg[164]), # новое предложение с заглавной / запоминать положение окна
+                    "{}" + self.msg[347] if not self.desktop else None
                 ],
                 defaults=[
                     self.settings[0][3],  # норма часов
@@ -6029,11 +6040,19 @@ class RMApp(App):
                     self.settings[0][26], # цветной квадратик в квартире
                     self.settings[0][15], # ограничение высоты записи посещения
                     self.settings[0][11] if not self.desktop else self.settings[0][12], # новое предложение с заглавной / запоминать положение окна
+                    self.settings[0][27] if not self.desktop else None, # автозавершение клавиатуры (по умолчанию отключено начиная с версии 2.17.007)
 
                 ],
                 multilines=[False, False, False, False, False, False, False, False, False, False, False, False,
-                            False, False, False, False, False, False, False]
+                            False, False, False, False, False, False, False, False, False]
             )
+
+            """ Свободные настройки:            
+            self.settings[0][28]
+            self.settings[0][29]
+            self.settings[0][30]
+            self.settings[0][31]
+            self.settings[0][32]"""
 
             # Первая вкладка: настройки
 
@@ -6130,17 +6149,10 @@ class RMApp(App):
             linkColor = get_hex_from_color(self.linkColor)
 
             if platform == "android":
-                from kvdroid.tools.deviceinfo import device_info
-                if device_info("manufacturer").lower() == "huawei":
-                    store = [ # текст и адрес ссылки на магазин (AppGallery)
-                        f"\n\n{self.msg[218]}\n[ref=store][color={linkColor}]{icon('icon-huawei')} [u]Huawei AppGallery[/u][/color][/ref]",
-                        "https://appgallery.huawei.com/app/C107628637"
-                    ]
-                else:
-                    store = [ # (Play Store)
-                        f"\n\n{self.msg[218]}\n[ref=store][color={linkColor}]{icon('icon-googleplay')} [u]{'Google Play Маркет' if self.language == 'ru' else 'Google Play Store'}[/u][/color][/ref]",
-                        "https://play.google.com/store/apps/details?id=org.rocketministry"
-                    ]
+                store = [ # (Play Store)
+                    f"\n\n{self.msg[218]}\n[ref=store][color={linkColor}]{icon('icon-googleplay')} [u]{'Google Play Маркет' if self.language == 'ru' else 'Google Play Store'}[/u][/color][/ref]",
+                    "https://play.google.com/store/apps/details?id=org.rocketministry"
+                ]
             else:
                 store = "", ""
 
@@ -6596,7 +6608,7 @@ class RMApp(App):
     # Диалоговые окна
 
     def createInputBox(self, title="", form=None, message="", default="", hint="", checkbox=None, handleCheckbox=None,
-                       active=True, input_type="text", positive=None, sort=None, details=None, neutral=None,
+                       active=True, positive=None, sort=None, details=None, neutral=None,
                        multiline=False, tip=None, embed=None, embed2=None, limit=99999, focus=False, bin=False):
         """ Форма ввода данных с одним полем """
         if len(self.stack) > 0: self.stack.insert(0, self.stack[0])
@@ -6639,7 +6651,7 @@ class RMApp(App):
                             size_hint_x=1 if not self.horizontal else .5)
         self.inputBoxEntry = MyTextInput(multiline=multiline, hint_text=hint, limit=limit, pos_hint=pos_hint,
                                          size_hint_y=.683 if multiline else None, focus=focus,
-                                         height=self.standardTextHeight*1.3, input_type=input_type,
+                                         height=self.standardTextHeight*1.3, input_type=self.textEnterMode,
                                          font_size=(self.fontS*self.fScale) if multiline else None,
                                          halign="left" if multiline else "center",
                                          rounded=True if not multiline else False, text=default)
@@ -6814,11 +6826,12 @@ class RMApp(App):
             elif self.msg[315] in str(options[row]): self.multipleBoxEntries.append(self.mapSelector())
             elif self.msg[168] in str(options[row]): self.multipleBoxEntries.append(self.themeSelector())
             elif not checkbox:
-                input_type = "number" if settings or self.msg[30] in self.multipleBoxLabels[row].text else "text"
+                input_type = "number" if settings or self.msg[30] in self.multipleBoxLabels[row].text \
+                    else self.textEnterMode
                 self.multipleBoxEntries.append(
                     MyTextInput(
                         id=str(options[row]), limit=limit, multiline=multiline,
-                        focus=True if focus == self.multipleBoxLabels[row].text else False,# if multiline else False,
+                        focus=True if focus == self.multipleBoxLabels[row].text else False,
                         onlyPadding=True if self.desktop or ("Details" in self.disp.form and self.fScale <= 1) else False,
                         text=str(default) if default != "virtual" else "", halign=halign, height=height,
                         size_hint_x=1, input_type=input_type, disabled=disable, shrink=shrink,
@@ -6932,7 +6945,7 @@ class RMApp(App):
             else:
                 h = self.standardTextHeight * (1.8 if self.desktop else 2.1)
             grid.rows_minimum = {0: h, 1: h, 2: h, 3: h, 4: h, 5: h, 6: h, 7: h, 8: h, 9: h, 10: h, 11: h, 12: h,
-                                 13: h, 14: h, 15: h, 16: h, 17: h, 18: h}
+                                 13: h, 14: h, 15: h, 16: h, 17: h, 18: h, 19: h}
             grid.bind(minimum_height=grid.setter('height'))
             scroll.add_widget(grid)
             form.add_widget(scroll)
@@ -7316,7 +7329,7 @@ class RMApp(App):
             self.quickPhone = MyTextInputPopup(id="quickPhone", onlyPadding=True, hint_text=self.msg[35],
                                                text=self.flat.phone, multiline=False, wired_border=True,
                                                focus=True if self.desktop else False,
-                                               input_type="number" if not self.desktop else "text")
+                                               input_type="number" if not self.desktop else self.textEnterMode)
             phoneBox.add_widget(self.quickPhone)
             self.savePhoneBtn = ButtonInsideText(text=self.button["check"], pos_hint={"right": 1, "center_y": .5},
                                                  parentText=self.quickPhone,
@@ -8183,15 +8196,7 @@ class RMApp(App):
         """ Действия при нажатии на кнопки всплывающего окна self.popup """
         self.dismissTopPopup()
 
-        if self.popupForm == "windows":
-            self.dismissTopPopup(all=True)
-            if self.button["yes"] in instance.text.lower():
-                if self.language == "ru":
-                    webbrowser.open("https://github.com/antorix/rocket-ministry/wiki/ru#windows")
-                else:
-                    webbrowser.open("https://github.com/antorix/rocket-ministry/wiki#windows")
-
-        elif self.popupForm == "clearData":
+        if self.popupForm == "clearData":
             if self.button["yes"] in instance.text.lower():
                 self.clearDB()
                 self.removeFiles()
@@ -9016,14 +9021,10 @@ class RMApp(App):
             self.showProgress(icon=self.button["spinner1"])
             self.terPressed(progress=True, restart=True, draw=False)
         else: # полная перезагрузка приложения
-            if platform == "android":
-                from kvdroid.tools import restart_app
-                restart_app()
-            else:
-                self.stop()
-                if self.desktop:
-                    from os import startfile
-                    startfile("main.py")
+            self.stop()
+            if self.desktop:
+                from os import startfile
+                startfile("main.py")
 
     def on_orientation_change(self):
         """ Смена ориентации экрана в настольной версии """
@@ -9036,10 +9037,15 @@ class RMApp(App):
             self.conPressed()
 
     def isDarkMode(self):
-        """ Ппытаемся определить, светлая или темная тема на устройстве (темная возвращает True) """
+        """ Пытаемся определить, светлая или темная тема на устройстве (темная возвращает True) """
         if platform == "android":
-            from kvdroid.tools.darkmode import dark_mode
-            return dark_mode()
+            try:
+                Configuration = autoclass('android.content.res.Configuration')
+                config = activity.getResources().getConfiguration()
+                ui_mode = config.uiMode & Configuration.UI_MODE_NIGHT_MASK
+                return ui_mode == Configuration.UI_MODE_NIGHT_YES
+            except:
+                return False
         else:
             if platform == "win":
                 try: import winreg
@@ -9232,6 +9238,7 @@ class RMApp(App):
                 if self.settings[0][24] is None: self.settings[0][24] = 0 # активация используемых настроек из новой партии
                 if self.settings[0][25] is None: self.settings[0][25] = 0
                 if self.settings[0][26] is None: self.settings[0][26] = 0
+                if self.settings[0][27] is None: self.settings[0][26] = 0
 
                 if not "." in str(self.settings[1]):
                     self.dprint("В settings[1] не найден номер версии...")
@@ -9280,14 +9287,14 @@ class RMApp(App):
             fileDates.sort(reverse=True)
             try: self.load(forced=True, allowSave=allowSave, dataFile=self.backupFolderLocation + files[restoreNumber])
             except:
-                message = f"Не удалось восстановить резервную копию № {restoreNumber}: {files[restoreNumber]}"
+                message = f"Не удалось восстановить резервную копию"
                 self.dprint(message)
                 if not silent:
                     try: self.popup(message=message)
                     except: self.error = message
                 return False
             else:
-                message = f"Успешно восстановлена резервная копия № {restoreNumber}: {files[restoreNumber]}"
+                message = f"Успешно восстановлена резервная копия №"
                 self.dprint(message)
                 if not silent:
                     try: self.popup(message=message)
@@ -9338,7 +9345,7 @@ class RMApp(App):
                 message = f"Не удалось создать корректную резервную копию после {count} попыток! Удаляем файл {bkFile} и перезагружаемся..."
                 self.dprint(message)
                 os.remove(bkFile)
-                self.restart()
+                self.stop()
 
         # Сохраняем
         for count in range(1, 6):
@@ -9504,7 +9511,10 @@ class RMApp(App):
     def removeFiles(self, keepDatafile=False):
         """ Удаление базы данных и резервной папки """
         if os.path.exists(self.userPath + self.dataFile) and not keepDatafile: os.remove(self.userPath + self.dataFile)
-        if os.path.exists(self.backupFolderLocation): shutil.rmtree(self.backupFolderLocation)
+        try:
+            if os.path.exists(self.backupFolderLocation): shutil.rmtree(self.backupFolderLocation)
+        except:
+            pass
 
     def share(self, silent=False, clipboard=False, email=False, folder=None, file=False, ter=None, create_chooser=True):
         """ Sharing database """

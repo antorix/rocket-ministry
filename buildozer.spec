@@ -13,23 +13,23 @@ package.domain = org
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,ttf,fontd,png,lang,kv
+source.include_exts = py,ttf,fontd,lang,png,jpg,kv,atlas,toml
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
 
 # (list) Source files to exclude (let empty to not exclude anything)
-#source.exclude_exts = spec
+# source.exclude_exts =
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-#source.exclude_dirs = tests, bin, venv
+source.exclude_dirs = temp, tests, bin, dist, .vscode, .venv, __pycache__, .github
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
-#source.exclude_patterns = license,images/*/*.jpg
+source.exclude_patterns = app_copy.zip, buildozer.spec, poetry.lock, pyproject.toml
 
 # (str) Application versioning (method 1)
-version = 2.17.006
+version = 2.17.007
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -37,19 +37,22 @@ version = 2.17.006
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = kivy==2.3.0, python3, plyer, kvdroid, python-dateutil, androidstorage4kivy
+requirements = python3, kivy==2.3.1, kivy_reloader, android, toml, trio, attrs, outcome, sniffio, sortedcontainers, exceptiongroup, plyer, kvdroid, python-dateutil, androidstorage4kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
+#presplash.filename = %(source.dir)s/data/presplash.png
 presplash.filename = %(source.dir)s/presplash.png
 
 # (str) Icon of the application
+#icon.filename = %(source.dir)s/data/icon.png
 icon.filename = %(source.dir)s/icon_mobile.png
 
-# (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
+# (list) Supported orientations
+# Valid options are: landscape, portrait, portrait-reverse or landscape-reverse
 orientation = portrait
 
 # (list) List of service to declare
@@ -63,10 +66,10 @@ orientation = portrait
 # author = © Copyright Info
 
 # change the major version of python used by the app
-#osx.python_version = 3
+osx.python_version = 3
 
 # Kivy version to use
-#osx.kivy_version = 2.1.0
+osx.kivy_version = 1.9.1
 
 #
 # Android specific
@@ -90,27 +93,31 @@ android.presplash_color = #000000
 #android.presplash_lottie = "path/to/lottie/file.json"
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)
+#icon.adaptive_foreground.filename = %(source.dir)s/data/icon_fg.png
+#icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
 icon.adaptive_foreground.filename = %(source.dir)s/icon_mobile.png
 icon.adaptive_background.filename = %(source.dir)s/icon_mobile.png
 
 # (list) Permissions
-#android.permissions = [CALL_PHONE, INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE]
+# (See https://python-for-android.readthedocs.io/en/latest/buildoptions.html#id1 for all the supported syntaxes and properties)
+#android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)
+#android.permissions = INTERNET
 android.permissions = CALL_PHONE, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 34
+android.api = 35
 
 # (int) Minimum API your APK / AAB will support.
-#android.minapi = 21
+android.minapi = 24
 
 # (int) Android SDK version to use
 #android.sdk = 20
 
 # (str) Android NDK version to use
-android.ndk = 25b
+# android.ndk = 25b
 
 # (int) Android NDK API to use. This is the minimum API your app will support, it should usually match android.minapi.
 #android.ndk_api = 21
@@ -136,7 +143,7 @@ android.ndk = 25b
 # agreements. This is intended for automation only. If set to False,
 # the default, you will be shown the license when first running
 # buildozer.
-# android.accept_sdk_license = False
+android.accept_sdk_license = True
 
 # (str) Android entry point, default is ok for Kivy-based app
 #android.entrypoint = org.kivy.android.PythonActivity
@@ -148,7 +155,6 @@ android.ndk = 25b
 # (str) Extra xml to write directly inside the <manifest> element of AndroidManifest.xml
 # use that parameter to provide a filename from where to load your custom XML code
 #android.extra_manifest_xml = ./src/android/extra_manifest.xml
-#android.extra_manifest_xml = extra_manifest.xml
 
 # (str) Extra xml to write directly inside the <manifest><application> tag of AndroidManifest.xml
 # use that parameter to provide a filename from where to load your custom XML arguments:
@@ -168,8 +174,7 @@ android.ndk = 25b
 #android.whitelist_src =
 
 # (str) Path to a custom blacklist file
-#android.blacklist_src = blacklist.spec
-#p4a.blacklist-requirements = sqlite3, libffi, openssl
+#android.blacklist_src =
 
 # (list) List of Java .jar files to add to the libs so that pyjnius can access
 # their classes. Don't add jars that you do not need, since extra jars can slow
@@ -246,6 +251,10 @@ android.ndk = 25b
 # (str) launchMode to set for the main activity
 #android.manifest.launch_mode = standard
 
+# (str) screenOrientation to set for the main activity.
+# Valid values can be found at https://developer.android.com/guide/topics/manifest/activity-element
+#android.manifest.orientation = fullSensor
+
 # (list) Android additional libraries to copy into libs/armeabi
 #android.add_libs_armeabi = libs/android/*.so
 #android.add_libs_armeabi_v7a = libs/android-v7/*.so
@@ -281,12 +290,13 @@ android.ndk = 25b
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
-android.archs = arm64-v8a, armeabi-v7a
 #android.archs = arm64-v8a
+android.archs = arm64-v8a, armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
-android.numeric_version = 102120201
+# android.numeric_version = 1
+android.numeric_version = 102120203
 
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True
@@ -299,7 +309,6 @@ android.allow_backup = True
 # This property takes a map of key-value pairs. (via a string)
 # Usage example : android.manifest_placeholders = [myCustomUrl:\"org.kivy.customurl\"]
 # android.manifest_placeholders = [:]
-#android.manifest_placeholders = [<uses-permission android:name="com.google.android.gms.permission.AD_ID"/>]
 
 # (bool) Skip byte compile for .py files
 # android.no-byte-compile-python = False
@@ -315,16 +324,13 @@ android.debug_artifact = apk
 #
 
 # (str) python-for-android URL to use for checkout
-p4a.url = https://github.com/misl6/python-for-android.git
-#p4a.url = https://github.com/kivy/python-for-android.git
+#p4a.url = https://github.com/misl6/python-for-android.git
 
 # (str) python-for-android fork to use in case if p4a.url is not specified, defaults to upstream (kivy)
 #p4a.fork = kivy
 
 # (str) python-for-android branch to use, defaults to master
-#p4a.branch = master
-#p4a.branch = develop
-#p4a.branch = fix/android-IME
+p4a.branch = develop
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
 #p4a.commit = HEAD
@@ -333,15 +339,13 @@ p4a.url = https://github.com/misl6/python-for-android.git
 #p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
-#p4a.local_recipes =
+#p4a.local_recipes = ./p4a-recipes
 
 # (str) Filename to the hook for p4a
 #p4a.hook =
 
 # (str) Bootstrap to use for android builds
-#p4a.bootstrap = sdl2
-#p4a.bootstrap = sdl3
-#p4a.bootstrap = https://github.com/libsdl-org/SDL/archive/refs/heads/main.zip
+# p4a.bootstrap = sdl2
 
 # (int) port number to specify an explicit --port= p4a argument (eg for bootstrap flask)
 #p4a.port =
@@ -354,8 +358,9 @@ p4a.url = https://github.com/misl6/python-for-android.git
 #p4a.setup_py = false
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
-#p4a.extra_args
+#p4a.extra_args =
 p4a.extra_args = --blacklist-requirements=sqlite3,openssl
+
 
 #
 # iOS specific
