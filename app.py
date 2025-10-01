@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 Version = "2.17.007"
-Subversion = "RC3"
+Subversion = "RC4"
 
 """
 НОВОЕ В ВЕРСИИ:
@@ -6605,7 +6605,7 @@ class RMApp(App):
     # Диалоговые окна
 
     def createInputBox(self, title="", form=None, message="", default="", hint="", checkbox=None, handleCheckbox=None,
-                       active=True, positive=None, sort=None, details=None, neutral=None,
+                       active=True, positive=None, sort=None, details=None, neutral=None, input_type=None,
                        multiline=False, tip=None, embed=None, embed2=None, limit=99999, focus=False, bin=False):
         """ Форма ввода данных с одним полем """
         if len(self.stack) > 0: self.stack.insert(0, self.stack[0])
@@ -6615,6 +6615,7 @@ class RMApp(App):
         self.floaterBox.clear_widgets()
         self.positive.show()
         self.backButton.disabled = False
+        if input_type is None: input_type = self.textEnterMode
         if title is not None: self.pageTitle.text = f"[ref=title]{title}[/ref]"
         self.positive.text = positive if positive is not None else self.button["save"]
         if self.theme != "3D":
@@ -6648,7 +6649,7 @@ class RMApp(App):
                             size_hint_x=1 if not self.horizontal else .5)
         self.inputBoxEntry = MyTextInput(multiline=multiline, hint_text=hint, limit=limit, pos_hint=pos_hint,
                                          size_hint_y=.683 if multiline else None, focus=focus,
-                                         height=self.standardTextHeight*1.3, input_type=self.textEnterMode,
+                                         height=self.standardTextHeight*1.3, input_type=input_type,
                                          font_size=(self.fontS*self.fScale) if multiline else None,
                                          halign="left" if multiline else "center",
                                          rounded=True if not multiline else False, text=default)
@@ -6707,6 +6708,7 @@ class RMApp(App):
             if multiline: self.inputBoxEntry.size_hint_y = 1
 
     def createMultipleInputBox(self, form=None, title=None, options=[], defaults=[], multilines=[], disabled=[],
+                               input_type=None,
                                focus="", positive=None, sort=None, details=None, note=None, neutral=None, nav=None):
         """ Форма ввода данных с несколькими полями """
         if form is None: form = self.mainList
@@ -6823,8 +6825,9 @@ class RMApp(App):
             elif self.msg[315] in str(options[row]): self.multipleBoxEntries.append(self.mapSelector())
             elif self.msg[168] in str(options[row]): self.multipleBoxEntries.append(self.themeSelector())
             elif not checkbox:
-                input_type = "number" if settings or self.msg[30] in self.multipleBoxLabels[row].text \
-                    else self.textEnterMode
+                if input_type is None:
+                    input_type = "number" if settings or self.msg[30] in self.multipleBoxLabels[row].text \
+                        else self.textEnterMode
                 self.multipleBoxEntries.append(
                     MyTextInput(
                         id=str(options[row]), limit=limit, multiline=multiline,
