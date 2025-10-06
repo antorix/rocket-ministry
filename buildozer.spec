@@ -29,7 +29,7 @@ source.exclude_dirs = temp, tests, bin, dist, .vscode, .venv, __pycache__, .gith
 source.exclude_patterns = app_copy.zip, buildozer.spec, poetry.lock, pyproject.toml
 
 # (str) Application versioning (method 1)
-version = 2.17.007
+version = 2.17.008
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -296,7 +296,7 @@ android.archs = arm64-v8a, armeabi-v7a
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
 # android.numeric_version = 1
-android.numeric_version = 102120203
+android.numeric_version = 102120207
 
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True

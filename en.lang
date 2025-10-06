@@ -6,7 +6,7 @@ Log
 Add entrance
 App updated!
 What's new:
-* Fixes and optimizations.* Android: Temporarily disabled keyboard auto-completion until bug #9167 is resolved (see documentation) with the option to turn it back on in the settings.* New version of Kivy and support for Android API 35.
+* Fixes and optimizations.* Android: Temporary solution to the problem of overlapping navigation buttons in the Android bottom system panel (see documentation).
 Ministry log
 Nothing found
 Add house(s)

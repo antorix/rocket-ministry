@@ -1,14 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-Version = "2.17.007"
-Subversion = "RC5"
+Version = "2.17.008"
+Subversion = "RC1"
 
 """
 НОВОЕ В ВЕРСИИ:
 * Исправления и оптимизации.
-* Временное отключение автозавершения на клавиатуре до решения бага № 9167 (см. документацию) с возможностью включить его обратно в настройках.
-* Новая версия Kivy и поддержка Android API 35.
+* Временное решение проблемы перекрывающихся навигационных кнопок нижней системной панелью Android (см. документацию).
 """
 
 DataFile = "data.jsn"
@@ -2932,13 +2931,15 @@ class MainMenuButton(TouchRippleBehavior, Button):
     def __init__(self, text, **kwargs):
         super(MainMenuButton, self).__init__()
         self.markup = True
-        self.height = 0
-        self.pos_hint = {"center_y": .5}
+        #self.height = 0
         self.lastTouch = None
         if not RM.desktop:
             self.iconFont = int(RM.fontL)
             if not RM.bigLanguage: self.font_size = int(RM.fontXS * .8 * RM.fScale)
             else: self.font_size = int(RM.fontXS * .8)
+            if RM.settings[0][28]:
+                self.pos_hint = {"top": 1}  # {"center_y": .5}
+                self.size_hint = 1, .6
         else:
             self.iconFont = int(RM.fontXL * 1.1)
             if RM.bigLanguage and RM.horizontal:
@@ -2957,7 +2958,6 @@ class MainMenuButton(TouchRippleBehavior, Button):
         self.iconLog1 = 'icon-file-text'
         self.iconLog2 = 'icon-file-text-o'
         self.valign = self.halign = "center"
-        self.size_hint = (1, 1)
         self.markup = True
         self.background_normal = ""
         self.background_down = ""
@@ -3177,53 +3177,7 @@ class DatePicker(BoxLayout):
 class RMApp(App):
     def build(self):
         self.interface = AnchorLayout(anchor_y="top")
-        def __start(*args):
-            self.userPath = UserPath
-            self.backupFolderLocation = BackupFolderLocation
-            self.dataFile = DataFile
-            self.houses, self.settings, self.resources = self.initializeDB()
-            self.disp = DisplayedList()
-            self.differentFont = "DejaVuSans.ttf"  # специальный шрифт для некоторых языков
-            self.today = time.strftime("%d", time.localtime())
-            self.languages = {
-                # список всех установленных языков, очередность должна совпадать с порядком столбцов,
-                # key должен совпадать с принятой в Android локалью, value – с msg[1] для всех языков,
-                # font - шрифт, которым выводится этот язык
-                "en": ["English", None],  # key: [value, font]
-                "es": ["español", None],
-                "ru": ["русский", None],
-                "uk": ["українська", None],
-                "sr": ["srpski", None],
-                "tr": ["Türkçe", None],
-                "ka": ["ქართული", self.differentFont],
-                "hy": ["Հայերեն", self.differentFont],
-            }
-            self.load(allowSave=False)
-            self.showUpdate = True if Version > self.settings[1] or not "." in self.settings[1] else False
-            def __prestart(threadName=None, delay=None):
-                """ Действия перед запуском, которые пытаемся делать многопотоково"""
-                self.save(backup=True)
-                self.backupRestore(delete=True, silent=True)
-            try:
-                import _thread
-                _thread.start_new_thread(__prestart, ("Thread-Prestart", 0,))
-            except:
-                __prestart()
-            self.setParameters()
-            self.setTheme()
-            self.createInterface()
-            self.terPressed(progress=True, restart=True)
-            Clock.schedule_interval(lambda x: self.save(backup=True), 1800)  # резервирование каждые 30 мин.
-        Clock.schedule_once(__start, .01)
         return self.interface
-
-    def noDataFileActions(self):
-        """ Выполнение каких-то действий в зависимости от наличия файла данных """
-        pass # пока ни для чего не используется
-        """if os.path.exists(self.userPath + self.dataFile):
-            self.dprint("Поиск файла данных: найден.")
-        else:
-            self.dprint("Поиск файла данных: НЕ найден.")"""
 
     # Подготовка переменных
 
@@ -3305,7 +3259,8 @@ class RMApp(App):
         self.titleSizeHintY = .11  # ширина полосы заголовка
         self.tableSizeHintY = .09  # ширина полосы верхних табличных кнопок
         self.bottomButtonsSizeHintY = .095  # .12 # ширина полосы центральной кнопки
-        self.mainButtonsSizeHintY = .09  # ширина полосы 3 главных кнопок
+        self.mainButtonsSizeHintY = .09 if not self.settings[0][28] or self.desktop else .2
+        # ширина полосы 3 главных кнопок
         self.descrColWidth = .38  # ширина левого столбца таблицы (подписи полей), но кроме настроек
         self.spacing = self.thickness()[0] * 2
         self.padding = self.thickness()[0] * 2.5
@@ -3387,7 +3342,7 @@ class RMApp(App):
                     self.dprint("Выход из программы.")
                     self.checkOrientation(width=args[0].size[0], height=args[0].size[1])
                 Window.bind(on_request_close=__close, on_resize=self.checkOrientation)
-            elif platform == "android":#else:
+            elif platform == "android":
                 try: plyer.orientation.set_portrait()
                 except: pass
 
@@ -4502,9 +4457,10 @@ class RMApp(App):
                         if not addEllipsis: # кнопки прокрутки вниз и вверх везде, где нет трех точек
                             btnSize = [int(self.standardTextHeightUncorrected * 1.7),
                                        int(self.standardTextHeightUncorrected * 1.7)]
+                            k000 = .45 if self.settings[0][28] and not self.desktop else .32
                             fBox = BoxLayout(orientation="vertical", spacing=self.spacing if self.theme != "3D" else 0,
                                              size_hint=(None, None), pos=[Window.size[0] - btnSize[0] - self.padding,
-                                                                          int(self.mainList.size[1] * .32)])
+                                                                          int(self.mainList.size[1] * k000)])
                             if self.theme != "3D":
                                 scrollselfUp = FloatButton(text=self.button["chevron-up"], size=btnSize)
                                 scrollselfDown = FloatButton(text=self.button["chevron-down"], size=btnSize)
@@ -5023,7 +4979,18 @@ class RMApp(App):
 
                 # Недокументированные поисковые запросы:
 
-                if input == "report000":
+                if input == "000" and not self.desktop:
+                    # увеличенная высота нижних навигационных клавиш в версии 2.17.008 для временного
+                    # решения проблемы с перекрытием этих клавиш системной панелью Android
+                    if self.settings[0][28] == 0:
+                        self.settings[0][28] = 1
+                    else:
+                        self.settings[0][28] = 0
+                    self.restart()
+                    self.save()
+                    self.terPressed()
+
+                elif input == "report000":
                     self.rep.checkNewMonth(forceDebug=True)
 
                 elif input == "%": # экспорт в облако без выбора приложения
@@ -6480,8 +6447,9 @@ class RMApp(App):
 
             # Круглые кнопки слева (снизу вверх)
 
+            k000 = .5 if self.settings[0][28] and not self.desktop else .35
             pos = [self.padding*2 if not self.horizontal else self.horizontalOffset + self.padding*2,
-                   self.mainList.size[1] * .35 - (0 if not self.horizontal else Window.size[1] * .06)]
+                   self.mainList.size[1] * k000 - (0 if not self.horizontal else Window.size[1] * .06)]
             if len(self.flat.records) == 0: pos[1] *= .75
 
             if self.desktop:
@@ -8981,12 +8949,61 @@ class RMApp(App):
 
     # Системные функции
 
+    def on_start(self):
+        """ При запуске """
+        def __start(*args):
+            self.userPath = UserPath
+            self.backupFolderLocation = BackupFolderLocation
+            self.dataFile = DataFile
+            self.houses, self.settings, self.resources = self.initializeDB()
+            self.disp = DisplayedList()
+            self.differentFont = "DejaVuSans.ttf"  # специальный шрифт для некоторых языков
+            self.today = time.strftime("%d", time.localtime())
+            self.languages = {
+                # список всех установленных языков, очередность должна совпадать с порядком столбцов,
+                # key должен совпадать с принятой в Android локалью, value – с msg[1] для всех языков,
+                # font - шрифт, которым выводится этот язык
+                "en": ["English", None],  # key: [value, font]
+                "es": ["español", None],
+                "ru": ["русский", None],
+                "uk": ["українська", None],
+                "sr": ["srpski", None],
+                "tr": ["Türkçe", None],
+                "ka": ["ქართული", self.differentFont],
+                "hy": ["Հայերեն", self.differentFont],
+            }
+            self.load(allowSave=False)
+            self.showUpdate = True if Version > self.settings[1] or not "." in self.settings[1] else False
+            def __prestart(threadName=None, delay=None):
+                """ Действия перед запуском, которые пытаемся делать многопотоково"""
+                self.save(backup=True)
+                self.backupRestore(delete=True, silent=True)
+            try:
+                import _thread
+                _thread.start_new_thread(__prestart, ("Thread-Prestart", 0,))
+            except:
+                __prestart()
+            self.setParameters()
+            self.setTheme()
+            self.createInterface()
+            self.terPressed(progress=True, restart=True)
+            Clock.schedule_interval(lambda x: self.save(backup=True), 1800)  # резервирование каждые 30 мин.
+        Clock.schedule_once(__start, 0)#.01)
+
     def on_pause(self):
         """ На паузе приложения """
         self.cacheFreeModeGridPosition()
         self.checkDate()
         self.save(verify=True)
         return True
+
+    def noDataFileActions(self):
+        """ Выполнение каких-то действий в зависимости от наличия файла данных """
+        pass # пока ни для чего не используется
+        """if os.path.exists(self.userPath + self.dataFile):
+            self.dprint("Поиск файла данных: найден.")
+        else:
+            self.dprint("Поиск файла данных: НЕ найден.")"""
 
     @mainthread
     def loadShared(self):
@@ -9221,7 +9238,8 @@ class RMApp(App):
                 if self.settings[0][24] is None: self.settings[0][24] = 0 # активация используемых настроек из новой партии
                 if self.settings[0][25] is None: self.settings[0][25] = 0
                 if self.settings[0][26] is None: self.settings[0][26] = 0
-                if self.settings[0][27] is None: self.settings[0][26] = 0
+                if self.settings[0][27] is None: self.settings[0][27] = 0
+                if self.settings[0][28] is None: self.settings[0][28] = 0
 
                 if not "." in str(self.settings[1]):
                     self.dprint("В settings[1] не найден номер версии...")
