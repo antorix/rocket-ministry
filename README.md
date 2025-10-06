@@ -17,6 +17,8 @@ The app is translated into English, Spanish, Russian, Ukrainian, Turkish, Serbia
 * [Install on Linux](https://github.com/antorix/Rocket-Ministry/wiki#linux)
 
 * [Data Synchronization and Transfer](https://github.com/antorix/Rocket-Ministry/wiki#data-synchronization-and-transfer)
+
+* [Known bugs](https://github.com/antorix/rocket-ministry/wiki#known-bugs)
  
 * [Frequently asked questions](https://github.com/antorix/Rocket-Ministry/wiki#faq)
 
