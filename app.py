@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 
 Version = "2.17.008"
-Subversion = "RC1"
+Subversion = "09_beta"
 
 """
 НОВОЕ В ВЕРСИИ:
 * Исправления и оптимизации.
-* Временное решение проблемы перекрывающихся навигационных кнопок нижней системной панелью Android (см. документацию).
 """
 
 DataFile = "data.jsn"
@@ -15,6 +14,7 @@ DataFile = "data.jsn"
 import os
 import shutil
 import time
+from kivy import platform
 
 try: # Android
     from android.permissions import request_permissions, Permission
@@ -34,27 +34,33 @@ try: # Android
     BackupFolderLocation = os.path.join(app_storage_path(), "Backup/")
     Devmode = Mobmode = 0
 
-except: # ПК
+except:
     UserPath = ""
     BackupFolderLocation = UserPath + "Backup/"
     from sys import argv
     Devmode = 1 if "dev" in argv else 0
     Mobmode = 1 if "mob" in argv else 0
-    import _thread
-    from subprocess import check_call # ПК проверяем версию Kivy и обновляем при необходимости
-    from sys import executable
-    from importlib.metadata import version
-    try:
-        if version("kivy") != "2.3.1": # версия kivy ниже нужной
-            check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.1'])
-    except ImportError as e: # kivy вообще не установлена, устанавливаем
-        try: check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.1'])
-        except: pass
-    try:
-        import requests
-    except ImportError as e:
-        check_call([executable, '-m', 'pip', 'install', 'requests'])
-        import requests
+    if platform != "ios":
+        import _thread
+        from subprocess import check_call # ПК проверяем версию Kivy и обновляем при необходимости
+        from sys import executable
+        from importlib.metadata import version
+        try:
+            if version("kivy") != "2.3.1": # версия kivy ниже нужной
+                check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.1'])
+        except ImportError as e: # kivy вообще не установлена, устанавливаем
+            try: check_call([executable, '-m', 'pip', 'install', 'kivy==2.3.1'])
+            except: pass
+
+        try: import requests
+        except ImportError as e:
+            check_call([executable, '-m', 'pip', 'install', 'requests'])
+            import requests
+
+        try: import darkdetect
+        except ImportError as e:
+            check_call([executable, '-m', 'pip', 'install', 'darkdetect'])
+            import darkdetect
 
 try: import plyer
 except ImportError as e:
@@ -67,7 +73,6 @@ except ImportError as e:
     from dateutil import relativedelta
 
 from kivy.app import App
-from kivy import platform
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.behaviors.touchripple import TouchRippleBehavior
@@ -1453,17 +1458,20 @@ class MyTextInput(TextInput):
             elif char.isnumeric(): return super().insert_text(char, from_undo=from_undo) # цифры
             elif self.time: # часы - превращаем все символы кроме цифр в двоеточия
                 return super().insert_text(":", from_undo=from_undo)
-        else: # обычный текст - с капитализацией            
+        else: # обычный текст - с капитализацией
             def __capitalize():
                 string = self.text[: self.cursor_index()].strip()
                 l = len(string) - 1
                 if len(string) > 0 and (string[l] == "." or string[l] == "!" or string[l] == "?") or \
                         self.cursor_col == 0:
                     return True # можно
-                else: return False # нельзя
+                else:
+                    return False # нельзя
             if __capitalize() and RM.language != "ka" and RM.settings[0][11] and not RM.desktop:
-                if len(char) == 1: char = char.upper()
-                else: char = char[0].upper() + char[1:]
+                if len(char) == 1:
+                    char = char.upper()
+                else:
+                    char = char[0].upper() + char[1:]
             return super().insert_text(char, from_undo=from_undo)
 
     def on_text_validate(self):
@@ -3202,6 +3210,8 @@ class RMApp(App):
             elif platform == "linux":
                 try:    DL = os.environ['LANG'][0:2]
                 except: DL = "en"
+            elif platform == "ios":
+                DL = "ru"
             else: DL = "en"
             if DL == "ru" or DL == "be" or DL == "kk": self.language = "ru"
             elif DL == "sr" or DL == "bs" or DL == "hr": self.language = "sr"
@@ -3991,6 +4001,10 @@ class RMApp(App):
 
             self.pageTitle.text = f"[ref=title]{self.disp.title}[/ref]" if "View" in form \
                 else self.disp.title
+
+            if 0:#platform == "android": # пытаемся определить размер нижней панели (пока не работает)
+                from kvdroid.tools.display import get_navbar_height, get_statusbar_height
+                self.pageTitle.text = str(get_statusbar_height())
 
             if self.disp.positive != "":
                 self.positive.show()
@@ -6055,7 +6069,7 @@ class RMApp(App):
                     file = filedialog.askopenfilename()
                     if file != "" and len(file) > 0:
                         self.importDB(file=file)
-                elif platform == "android":
+                elif platform == "android" or platform == "ios":
                     Chooser(self.chooser_callback).choose_content()
             openFile.bind(on_release=__open)
             g.add_widget(MyLabelAligned(text=self.msg[317], valign="center", halign="center", padding=padding2,
@@ -6144,7 +6158,7 @@ class RMApp(App):
             self.porchView(instance=instance)
             self.clickedInstance.update(self.flat)
             self.flat = tempFlat
-        if platform == "android":
+        if platform == "android" or platform == "ios":
             try: plyer.call.makecall(tel=self.flat.phone if self.disp.form != "flatDetails" \
                 else self.multipleBoxEntries[1].text.strip())
             except: request_permissions([Permission.CALL_PHONE])
@@ -8725,10 +8739,10 @@ class RMApp(App):
         import glob
         languages = []
         for l in self.languages.keys(): languages.append([])
-        if Devmode and os.path.exists("lang.ini"):  # загрузка настроек, если есть файл
-            with open("lang.ini", "r", encoding="utf-8", newline='') as file:
-                dir = path = file.read().splitlines()[0]
-            filenames = glob.glob(dir + "Rocket Ministry localization sheet*.csv")
+        if Devmode: # загрузка настроек, если есть файл
+            langFile = "Rocket Ministry localization sheet - Лист1.csv"
+            # файл локализаций, скачанный из Google Drive, нужно вручную положить в папку программы
+            filenames = glob.glob(langFile)
             def __generate(file, col):
                 with open(file, "w", encoding="utf-8") as f:
                     for row in languages[col]:
@@ -8746,8 +8760,7 @@ class RMApp(App):
                 with open("lpath.ini", encoding='utf-8', mode="r") as f: lpath = f.read()
                 for i in range(len(self.languages.keys())):
                     __generate(f"{list(self.languages.keys())[i]}.lang", i) # в Linux с относительным путем
-                for zippath in glob.iglob(os.path.join(dir, '*.csv')):
-                    os.remove(zippath)
+                os.remove(langFile)
         else: self.dprint("Путь к языковому файлу не найден либо не включен режим разработчика.")
 
     def update(self, forced=False):
@@ -9063,8 +9076,6 @@ class RMApp(App):
                         return False
             else:
                 try:
-                    check_call([executable, '-m', 'pip', 'install', 'darkdetect'])
-                    import darkdetect
                     return darkdetect.isDark()
                 except:
                     return False

@@ -29,7 +29,7 @@ source.exclude_dirs = temp, tests, bin, dist, .vscode, .venv, __pycache__, .gith
 source.exclude_patterns = app_copy.zip, buildozer.spec, poetry.lock, pyproject.toml
 
 # (str) Application versioning (method 1)
-version = 2.17.008
+version = 2.17.009
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -37,18 +37,16 @@ version = 2.17.008
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy==2.3.1, kivy_reloader, android, toml, trio, attrs, outcome, sniffio, sortedcontainers, exceptiongroup, plyer, kvdroid, python-dateutil, androidstorage4kivy
+requirements = python3, kivy, kivy_reloader, android, toml, trio, attrs, outcome, sniffio, sortedcontainers, exceptiongroup, plyer, kvdroid, python-dateutil, androidstorage4kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
 presplash.filename = %(source.dir)s/presplash.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
 icon.filename = %(source.dir)s/icon_mobile.png
 
 # (list) Supported orientations
@@ -83,7 +81,6 @@ fullscreen = 0
 # red, blue, green, black, white, gray, cyan, magenta, yellow, lightgray,
 # darkgray, grey, lightgrey, darkgrey, aqua, fuchsia, lime, maroon, navy,
 # olive, purple, silver, teal.
-#android.presplash_color = #FFFFFF
 android.presplash_color = #000000
 
 # (string) Presplash animation using Lottie format.
@@ -93,15 +90,12 @@ android.presplash_color = #000000
 #android.presplash_lottie = "path/to/lottie/file.json"
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)
-#icon.adaptive_foreground.filename = %(source.dir)s/data/icon_fg.png
-#icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
 icon.adaptive_foreground.filename = %(source.dir)s/icon_mobile.png
 icon.adaptive_background.filename = %(source.dir)s/icon_mobile.png
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions.html#id1 for all the supported syntaxes and properties)
 #android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)
-#android.permissions = INTERNET
 android.permissions = CALL_PHONE, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 
 # (list) features (adds uses-feature -tags to manifest)
@@ -290,13 +284,12 @@ android.accept_sdk_license = True
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
-#android.archs = arm64-v8a
-android.archs = arm64-v8a, armeabi-v7a
+android.archs = arm64-v8a
+#android.archs = arm64-v8a, armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
-# android.numeric_version = 1
-android.numeric_version = 102120207
+android.numeric_version = 102120208
 
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True
@@ -324,7 +317,7 @@ android.debug_artifact = apk
 #
 
 # (str) python-for-android URL to use for checkout
-#p4a.url = https://github.com/misl6/python-for-android.git
+#p4a.url =
 
 # (str) python-for-android fork to use in case if p4a.url is not specified, defaults to upstream (kivy)
 #p4a.fork = kivy
@@ -359,7 +352,7 @@ p4a.branch = develop
 
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
 #p4a.extra_args =
-p4a.extra_args = --blacklist-requirements=sqlite3,openssl
+#p4a.extra_args = --blacklist-requirements=sqlite3,openssl
 
 
 #
