@@ -37,7 +37,8 @@ version = 2.17.009
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy, kivy_reloader, android, toml, trio, attrs, outcome, sniffio, sortedcontainers, exceptiongroup, plyer, kvdroid, python-dateutil, androidstorage4kivy
+
+requirements = python3, kivy==2.3.1, android, plyer, kvdroid, python-dateutil, androidstorage4kivy, kivy_reloader, toml, trio, attrs, outcome, sniffio, sortedcontainers, exceptiongroup
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -202,12 +203,12 @@ android.accept_sdk_license = True
 #android.add_resources =
 
 # (list) Gradle dependencies to add
-#android.gradle_dependencies =
+android.gradle_dependencies = androidx.appcompat:appcompat:1.7.1, org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0
 
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
 # android.enable_androidx requires android.api >= 28
-#android.enable_androidx = True
+android.enable_androidx = True
 
 # (list) add java compile options
 # this can for example be necessary when importing certain java libraries using the 'android.gradle_dependencies' option
@@ -284,12 +285,12 @@ android.accept_sdk_license = True
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
-android.archs = arm64-v8a
-#android.archs = arm64-v8a, armeabi-v7a
+#android.archs = arm64-v8a
+android.archs = arm64-v8a, armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
-android.numeric_version = 102120208
+android.numeric_version = 102120212
 
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True
@@ -353,7 +354,6 @@ p4a.branch = develop
 # (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
 #p4a.extra_args =
 #p4a.extra_args = --blacklist-requirements=sqlite3,openssl
-
 
 #
 # iOS specific
