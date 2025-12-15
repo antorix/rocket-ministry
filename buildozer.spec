@@ -29,7 +29,7 @@ source.exclude_dirs = temp, tests, bin, dist, .vscode, .venv, __pycache__, .gith
 source.exclude_patterns = app_copy.zip, buildozer.spec, poetry.lock, pyproject.toml
 
 # (str) Application versioning (method 1)
-version = 2.17.009
+version = 2.17.010
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -38,7 +38,8 @@ version = 2.17.009
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
 
-requirements = python3, kivy==2.3.1, android, plyer, kvdroid, python-dateutil, androidstorage4kivy, kivy_reloader, toml, trio, attrs, outcome, sniffio, sortedcontainers, exceptiongroup
+requirements = python3, kivy==2.3.1, android, plyer, python-dateutil, androidstorage4kivy, kivy_reloader, toml, https://github.com/kvdroid/Kvdroid/archive/refs/heads/master.zip
+#sniffio, exceptiongroup, sortedcontainers, outcome, attrs, trio
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -103,7 +104,7 @@ android.permissions = CALL_PHONE, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 35
+android.api = 36
 
 # (int) Minimum API your APK / AAB will support.
 android.minapi = 24
@@ -203,7 +204,7 @@ android.accept_sdk_license = True
 #android.add_resources =
 
 # (list) Gradle dependencies to add
-android.gradle_dependencies = androidx.appcompat:appcompat:1.7.1, org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0
+android.gradle_dependencies = androidx.appcompat:appcompat:1.7.1, org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0, androidx.media3:media3-common:1.8.0, androidx.media3:media3-exoplayer:1.8.0
 
 # (bool) Enable AndroidX support. Enable when 'android.gradle_dependencies'
 # contains an 'androidx' package, or any package from Kotlin source.
@@ -290,7 +291,7 @@ android.archs = arm64-v8a, armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
-android.numeric_version = 102120212
+android.numeric_version = 102120217
 
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True

@@ -6,7 +6,7 @@ Günlük
 Blok oluştur
 Uygulama güncellendi!
 Neler yeni:
-* Fixes and optimizations.
+* Zamanı iptal et düğmesi (zamanlayıcıda).* Düzeltmeler ve optimizasyonlar.
 Hizmet günlüğü
 Bir şey bulunmadı
 Ev(ler) ekle
@@ -320,7 +320,7 @@ Bir şeyler ters giderse yedek kopyayı kurtarın
 Yedeklemeler dahil tüm program verilerinin ve ayarlarının tamamen sıfırlanması
 Manuel olarak eklendi: [b]%s[/b] saat
 Manuel olarak eklendi: [b]%s[/b] saat kredi
-Arama, tüm dairelerin ve kişilerin tüm alanlarında çalışır.
+Zamanı#iptal et
 Duraklatma#
 Son#hizmet
 Son#kredi
@@ -336,7 +336,7 @@ Yalnızca etiketlerle
 Zamanlayıcı durduğunda buluta aktar
 Yeni versiyon bulundu! Programın bir sonraki başlangıcında güncellenecektir.
 İlk aramada renkli daireler yerine simge
-
+Arama, tüm dairelerin ve kişilerin tüm alanlarında çalışır.
 Aylık saat gereksiniminiz var mı?
 Daha sonra karar vereceğim
 Aylık gereksiniminizi girin
@@ -345,3 +345,4 @@ Veriler başarıyla yüklendi! Sonuçtan memnun kalmazsanız, en son yedeği ger
 Yeni bir ay başladı! Raporunuzu gönderdiniz mi?
 Dairede ekstra renkli kare
 Klavye otomatik tamamlama (HATALAR MÜMKÜNDÜR!)
+BİLMEK ÖNEMLİDİR! Klavyenizde otomatik düzeltme (otomatik tamamlama) etkinse ve metin girerken hatalarla karşılaşıyorsanız:#* Standart Gboard klavyesini kullanın.#* Metnin üzerindeki önerilere TIKLAMAYIN.#* Nokta koymak için iki boşluk kullanmayın.#* Metin giriş alanından çıkıp tekrar girdiğinizde hata her zaman sıfırlanır.

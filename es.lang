@@ -6,7 +6,7 @@ Diario
 Agregar entrada
 ¡Aplicación actualizada!
 ¿Qué hay de nuevo?
-* Fixes and optimizations.
+* Botón de cancelar tiempo en el temporizador. * Correcciones y optimizaciones.
 Diario de servicio
 No se ha encontrado nada
 Agregar casa(s)
@@ -320,7 +320,7 @@ Recuperar una copia de seguridad si algo salió mal
 Restablecimiento de todos los datos y configuraciones, incluidas las copias de seguridad
 Agregado manualmente: [b]%s[/b] h.
 Agregado manualmente: [b]%s[/b] h. de crédito
-La búsqueda funciona en todos los campos de todos los apartamentos y contactos.
+Cancelar#tiempo
 Pausa#
 Fin#servicio
 Fin#crédito
@@ -336,7 +336,7 @@ Solo con etiquetas
 Exportar a la nube al detener el cronómetro
 ¡Nueva versión encontrada! Se actualizará en el próximo inicio del programa.
 Icono en lugar de círculos de colores en la primera llamada
-
+La búsqueda funciona en todos los campos de todos los apartamentos y contactos.
 ¿Tiene un requisito de horas mensuales?
 Decidiré más tarde
 Ingrese su requisito mensual
@@ -345,3 +345,4 @@ La función de ingreso de número de teléfono se puede desactivar en la configu
 ¡Es un nuevo mes! ¿Ya ha entregado su informe?
 Cuadro de color extra en el apartamento
 Autocompletado del teclado (¡LOS ERRORES SON POSIBLES!)
+¡IMPORTANTE SABER! Si la autocorrección (auto-completado) está activada en tu teclado y encuentras errores al introducir texto:#* Usa el teclado estándar de Gboard.#* NO hagas clic en las sugerencias encima del texto.#* NO uses dos espacios para un punto.#* El error siempre se restablece si sales del campo de entrada de texto y luego vuelves a entrar.

@@ -6,7 +6,7 @@ Log
 Add entrance
 App updated!
 What's new:
-* Fixes and optimizations.
+* Cancel time button on timer.* Fixes and optimizations.
 Ministry log
 Nothing found
 Add house(s)
@@ -320,7 +320,7 @@ Recover a backup copy if something went wrong
 Full reset of all program data and settings, including backups
 [b]%s[/b] hour(s) added manually
 [b]%s[/b] hour(s) of credit added manually
-The search works in all fields of all apartments and contacts.
+Cancel#time
 Pause#
 End#ministry
 End#credit
@@ -336,7 +336,7 @@ Only with labels
 Export to cloud on timer stop
 New version found! It will be updated on the next program start.
 Icon instead of colored circles on first call popup
-
+The search works in all fields of all apartments and contacts.
 Do you have a monthly hour requirement?
 I’ll decide later
 Enter your monthly requirement
@@ -344,4 +344,5 @@ The phone number input feature can be disabled in the settings.
 Data successfully loaded! If you are not satisfied with the result, restore the latest backup.
 It's a new month! Have you turned in your report already?
 Extra color square on appartment
-Keyboard auto-completion (BUGS ARE POSSIBLE!)
+Keyboard auto-correction (BUGS ARE POSSIBLE!)
+IMPORTANT TO KNOW! If auto-correction (auto-completion) is enabled on your keyboard and you encounter bugs when entering text:#* Use the standard Gboard keyboard.#* DO NOT click on the hints above the text.#* DO NOT use two spaces for a period.#* The error is always reset if you exit the text input field and then get back in.

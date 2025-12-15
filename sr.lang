@@ -6,7 +6,7 @@ Izveštaj
 Kreiraj ulaz
 Aplikacija je ažurirana!
 Šta je novo:
-* Fixes and optimizations.
+* Dugme za otkazivanje vremena na tajmeru.* Ispravke i optimizacije.
 Časopis služenja
 Ništa nije pronađeno
 Dodajte jedan ili više kuća
@@ -320,7 +320,7 @@ Vratite rezervnu kopiju ako nešto pođe po zlu
 Potpuno resetovanje svih podataka programa i postavki, uključujući rezervne kopije
 Dodato ručno: [b]%s[/b] sati
 Dodato ručno: [b]%s[/b] VS
-Pretraga radi na svim poljima za sve stanove i kontakte.
+Otkaži#vreme
 Pauza#
 Završetak#usluge
 Završetak#upisa
@@ -336,7 +336,7 @@ Samo sa oznakama
 Izvezi u oblak kada se tajmer zaustavi
 Pronađena nova verzija! Biće ažuriran sledeći put kada pokrenete program.
 Ikona umesto obojenih krugova pri prvom pozivu
-
+Pretraga radi na svim poljima za sve stanove i kontakte.
 Da li imate potrebu za radnim vremenom mesečno?
 Odlučiću kasnije
 Unesite svoju mesečnu potrebu
@@ -345,3 +345,4 @@ Podaci su uspešno učitani! Ako niste zadovoljni rezultatom, vratite najnoviju 
 Počeo je novi mesec! Da li ste već predali svoj izveštaj?
 Dodatni kvadrat boje u stanu
 Dovršavanje tastature (moguće greške!)
+VAŽNO JE ZNATI! Ako je automatska ispravka (auto-kompletiranje) uključena na tvojoj tastaturi i pojave se greške pri unosu teksta:#* Koristi standardnu Gboard tastaturu.#* NE klikći na predloge iznad teksta.#* NE koristi dva razmaka za tačku.#* Greška se uvek resetuje kada izađeš iz polja za unos teksta i zatim se vratiš.

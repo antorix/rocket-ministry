@@ -1,13 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-Version = "2.17.009"
-Subversion = "RC4"
+Version = "2.17.010"
+Subversion = "RC3"
 
 """
 НОВОЕ В ВЕРСИИ:
-* Навигационная панель Android под цвет темной темы.
-* Оптимизация интерфейса для Android 15 и выше.
+* Кнопка отмены времени на таймере.
 * Исправления и оптимизации.
 """
 
@@ -22,10 +21,11 @@ if platform == "android":
     from android.permissions import request_permissions, Permission
     request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
     request_permissions(["com.google.android.gms.permission.AD_ID"])
-    from kvdroid.tools.display import set_edge_to_edge
+    from kvdroid.tools.display import set_edge_to_edge_manually
     from kvdroid.tools import navbar_color
     navbar_color("#000000", "black")
-    from kvdroid.tools.display import get_navbar_height, get_statusbar_height
+    from kvdroid.jinterface.view import Insets
+    from kvdroid.tools.display import set_on_apply_window_insets_listener, request_apply_insets
     from kvdroid.tools import restart_app
     from kvdroid.tools import keyboard_height
     from kvdroid import activity, autoclass
@@ -44,13 +44,12 @@ if platform == "android":
     Devmode = Mobmode = 0
 
 else:
-
     UserPath = ""
     BackupFolderLocation = UserPath + "Backup/"
-    from sys import argv
-    Devmode = 1 if "dev" in argv else 0
-    Mobmode = 1 if "mob" in argv else 0
     if platform != "ios":
+        from sys import argv
+        Devmode = 1 if "dev" in argv else 0
+        Mobmode = 1 if "mob" in argv else 0
         import _thread
         from subprocess import check_call # ПК проверяем версию Kivy и обновляем при необходимости
         from sys import executable
@@ -270,15 +269,7 @@ class Porch(object):
     def restoreFlat(self, instance):
         """ Восстанавление квартир (нажатие на плюсик) """
         self.scrollview = None
-        def __oldRandomNumber(number):
-            """ Проверка, что это не длинный номер, созданный random() в предыдущих версиях """
-            if "." in number:
-                pos = number.index(".")+1
-                length = len(number[pos:])
-                if length <= 1: return False
-                else: return True
-            else: return False
-        if ".5" in instance.flat.number and not __oldRandomNumber(instance.flat.number): # восстановление удаленной квартиры с таким же номером
+        if ".5" in instance.flat.number: # восстановление удаленной квартиры с таким же номером
             instance.flat.number = instance.flat.number[ : instance.flat.number.index(".")]
         elif "." in instance.flat.number: # либо удаление заглушки путем сдвига квартир налево
             self.deleteFlat(instance.flat, regularDelete=True)
@@ -1013,6 +1004,13 @@ class Report(object):
                 self.reportTime = 0.0
                 self.saveReport(mute=True, log=False, save=True) # после выключения секундомера делаем резервную копию принудительно
 
+        elif input == "x": # отмена подсчета времени
+            self.startTime = 0
+            self.endTime = 0
+            self.reportTime = 0.0
+            self.pauseTime = 0
+            self.saveReport(mute=True, log=False, save=True)
+
         elif input == "-и": # -1 изучение - по нажатию кнопки счетчика
             self.studies = int(RM.studies.input.text)-1
             if timePassed < 10 and f"{RM.msg[103]}{RM.col} [b]-" in prevLogEntry: # обнаружена предыдущая запись с "Изучения: " - складываем
@@ -1142,7 +1140,7 @@ class Report(object):
 class DisplayedList(object):
     """ Класс, описывающий содержимое и параметры списка, выводимого на RM.mainList """
     def __init__(self, message="", title="", form="", options=None, sort=None, details=None,
-               footer=None, positive="", neutral="", nav=None, jump=None, tip=None, back=True):
+            footer=None, positive="", neutral="", nav=None, jump=None, tip=None, back=True):
         if options is None: options = []
         if footer is None: footer = []
         self.message = message
@@ -1163,8 +1161,7 @@ class DisplayedList(object):
 class TipButton(Button):
     """ Заметки и предупреждения (невидимые кнопки) """
     def __init__(self, text="", size_hint_y=1, font_size=None, color=None, background_color=None, height=None,
-                 size_hint_x=1,
-                 padding=None, font_size_force=False, halign="left", valign="center", *args, **kwargs):
+                 size_hint_x=1, padding=None, font_size_force=False, halign="left", valign="center", *args, **kwargs):
         super(TipButton, self).__init__()
         self.text = text
         self.size_hint_x = size_hint_x
@@ -1191,7 +1188,7 @@ class MainScroll(GridLayout):
         super(MainScroll, self).__init__()
         self.spacing = RM.spacing * (2 if RM.desktop else 1.5)
         self.padding = (RM.padding * 2, RM.padding * 2, RM.padding * 2,
-                        RM.mainList.height*.06) # увеличенный просвет снизу из-за некликабельной зоны прокрутки
+                        RM.mainList.height * .06) # увеличенный просвет снизу из-за некликабельной зоны прокрутки
         self.size_hint_y = None
         self.bind(minimum_height=self.setter('height'))
 
@@ -1380,7 +1377,7 @@ class MyTextInput(TextInput):
                  text="", disabled=False, input_type=None, width=0, height=None, time=False, popup=False,
                  halign="left", valign="center", focus=False, color=None, limit=99999, onlyPadding=False,
                  font_size=None, fontRecalc=False, initialize=False, wired_border=True, rounded=False,
-                 shrink=False, id=None, specialFont=False, background_color=None, background_disabled_normal=None,
+                 shrink=False, id="", specialFont=False, background_color=None, background_disabled_normal=None,
                  softinput_mode="", blockPositivePress=False, *args, **kwargs):
         super(MyTextInput, self).__init__(*args, **kwargs)
         self.multiline = multiline
@@ -1424,11 +1421,10 @@ class MyTextInput(TextInput):
         self.hint_text = hint_text
         self.hint_text_color = RM.topButtonColor
         self.use_bubble = True
-        self.shrink = False#shrink
-        self.keyboard_mode = "auto"#"managed" if not RM.desktop else "auto"
-        Window.softinput_mode = softinput_mode
+        self.shrink = False
+        self.softinput_mode = softinput_mode
+        Window.softinput_mode = self.softinput_mode
         self.popup = popup
-        self.focus = focus
         self.textAfterDefocus = 0
         self.time = time
         self.write_tab = False
@@ -1448,6 +1444,7 @@ class MyTextInput(TextInput):
         else:
             self.foreground_color = "black" if RM.mode == "light" else "white"
         self.background_color = background_color if background_color is not None else 0, 0, 0, 0
+        self.focus = focus
 
     def insert_text(self, char, from_undo=False):
         """ Делаем буквы заглавными """
@@ -1491,10 +1488,28 @@ class MyTextInput(TextInput):
 
     def on_focus(self, instance=None, value=None):
         """ Некоторые действия на фокусе и дефокусе поля ввода """
+        if value: # фокус
+            kbMinHeight = Window.size[1]/10
+            if not RM.desktop:
+                if RM.msg[125] in self.id and not RM.flatViewFirstShow and RM.settings[0][15] > kbMinHeight: # "Детали посещения"
+                    Window.softinput_mode = ""
+                    RM.globalFrame.remove_widget(RM.boxFooter)
+                    RM.globalFrame.padding[3] = RM.settings[0][15] + RM.colorBtn[0].height + RM.padding
 
-        if not value: # дефокус
+                # Обновляем высоту клавиатуры через полсекунды после открытия, но только если она больше kbMinHeight
+                def __go(*args):
+                    kh = keyboard_height()
+                    if kh > kbMinHeight: RM.settings[0][15] = RM.settings[0][15] = kh
+                Clock.schedule_once(__go, .5)
 
-            if self.id == "regular": # обычный счетчик: изучения, квартиры и т .д.
+        else: # дефокус
+            if not RM.desktop and RM.msg[125] in self.id:
+                if RM.boxFooter not in RM.globalFrame.children:
+                    RM.globalFrame.add_widget(RM.boxFooter)
+                Window.softinput_mode = self.softinput_mode
+                RM.globalFrame.padding[3] = 0
+
+            if self.id == "number": # числовой счетчик: изучения, квартиры и т .д.
                 if self.text.strip() == "":
                     self.text = "0"
                 if RM.disp.form == "rep" and self == RM.studies.input and \
@@ -1537,7 +1552,7 @@ class MyTextInput(TextInput):
                     RM.entryID = None
                     RM.logPressed()
 
-            elif RM.disp.form == "porchView" and RM.firstCallPopup and RM.phoneInputOnPopup: # сохранение телефона на плашке первого посещения
+            elif self.id == "quickPhone" and RM.firstCallPopup and RM.phoneInputOnPopup: # сохранение телефона на плашке первого посещения
                 RM.flat.editPhone(RM.quickPhone.text)
                 RM.clickedInstance.update(RM.flat)
                 if not RM.resources[0][1][4]:
@@ -1545,13 +1560,14 @@ class MyTextInput(TextInput):
                     Clock.schedule_once(lambda x: RM.popup(title=RM.msg[247], message=RM.msg[343]), .1)
                 RM.save()
 
-            elif RM.disp.form == "set" and len(RM.popups) == 0: # настройки
-                if RM.msg[124] in self.id: # лимит часов
-                    RM.settings[0][3] = int(instance.text) if instance.text != "" else 0
-                elif RM.msg[53] in self.id: # лимит журнала
-                    RM.settings[0][14] = int(instance.text) if instance.text != "" else 0
-                    RM.rep.optimizeLog()
+            elif RM.msg[124] in self.id and len(RM.popups) == 0: # настройки: лимит часов
+                RM.settings[0][3] = int(instance.text) if instance.text != "" else 0
                 RM.save()
+
+            elif RM.msg[53] in self.id and len(RM.popups) == 0: # настройки: лимит журнала
+                RM.settings[0][14] = int(instance.text) if instance.text != "" else 0
+                RM.save()
+                RM.rep.optimizeLog()
 
             elif RM.disp.form == "rep" and self == RM.repBox: # правка отчета прошлого месяца на странице отчета
                 RM.rep.lastMonth = RM.repBox.text
@@ -1562,7 +1578,7 @@ class MyTextInput(TextInput):
         if RM.disp.form == "pCalc": # пионерский калькулятор
             RM.recalcServiceYear(allowSave=True)
 
-        elif "Details" in RM.disp.form or RM.disp.form == "flatView":
+        elif self.multiline and ("Details" in RM.disp.form or "flatView" in RM.disp.form): # кнопка очистки заметки
             RM.clearBtn.disabled = True if self.text == "" else False
 
             if RM.disp.form == "flatDetails": # перерисовка кнопки телефона по мере ввода телефона
@@ -1744,7 +1760,6 @@ class TTab(TabbedPanelHeader):
         self.text = f"{self.defaultText}"
         self.background_normal = "void.png"
         self.background_down = RM.tabColors[1]
-        #self.size = RM.mainList.size[0], RM.standardTextHeight * (1.5 if not RM.desktop else 1)
 
 class TopButton(Button):
     """ Кнопки поиска и настроек """
@@ -2098,8 +2113,6 @@ class FontCheckBox(Button):
                 RM.settings[0][12] = self.active
             elif self.setting == RM.msg[130]:  # уведомление при таймере
                 RM.settings[0][0] = self.active
-            elif self.setting == RM.msg[188]:  # ограничение высоты записи посещения
-                RM.settings[0][15] = self.active
             elif self.setting == RM.msg[338]:  # иконка вместо цветных кружков
                 RM.settings[0][24] = self.active
             elif self.setting == RM.msg[336]:  # экспорт при остановке таймера
@@ -2111,16 +2124,19 @@ class FontCheckBox(Button):
                 RM.updateSettings(scrollTo=self.setting)
             elif self.setting == RM.msg[346]:  # цветной квадратик в квартире
                 RM.settings[0][26] = self.active
-            elif self.setting == RM.msg[347]:  # автозавершение клавиатуры
+            elif self.setting == RM.msg[347]:  # автоисправление клавиатуры
                 RM.settings[0][27] = self.active
                 RM.updateSettings(scrollTo=self.setting)
-            elif self.setting == "Gesture mode": # режим жестов на Android без системной панели
+                if RM.settings[0][27]: # при включении показываем предупреждающее окно:
+                    message = RM.msg[348].replace("#", "\n")
+                    message = message.replace("*", f"[color={get_hex_from_color(RM.pageTitleColor)}]•[/color]")
+                    RM.popup(title=RM.msg[203], message=message, heightK=1.5 if RM.bigLanguage else 1.3)
+            elif 0:#self.setting == "Raise interface": # подъем интерфейса вверх для временного решения
                 RM.settings[0][28] = self.active
                 RM.updateSettings(scrollTo=self.setting)
                 RM.save()
                 RM.restart()
             RM.save()
-            if platform == "android": set_edge_to_edge()
 
         elif RM.disp.form == "log": # галочка в журнале отчета
             RM.settings[0][16] = self.active
@@ -2665,10 +2681,7 @@ class FooterButton(Button):
         self.background_down = ""
         self.background_normal = ""
         self.valign = "center"
-        if 0:#RM.disp.form == "houseView":
-            self.padding[2] = RM.padding*6
-            self.halign = "right"
-        else: self.halign = "left" if icon('icon-home') in text and RM.disp.form == "con" else "center"
+        self.halign = "left" if icon('icon-home') in text and RM.disp.form == "con" else "center"
         self.font_size = RM.fontS if RM.desktop else int(RM.fontXXS * .9 * RM.fontScale(cap=1.2))
 
     def on_touch_down(self, touch):
@@ -2687,7 +2700,7 @@ class FooterButton(Button):
                 return True
 
 class NoteButton(Button):
-    """ Кнопка для заметки под участком """
+    """ Кнопка для заметки под пунктом списка """
     def __init__(self, text="", id=None, radius=None, *args, **kwargs):
         if radius is None:
             self.radius = [RM.rad, RM.rad, 0, 0] if RM.disp.form == "rep" else (([0, 0, RM.rad, RM.rad] if RM.disp.form != "flatView" else [RM.rad, RM.rad, 0, 0]) if RM.theme != "3D" else [0, ])
@@ -2717,7 +2730,8 @@ class NoteButton(Button):
             self.text = self.text[:int(tl/oversize)-1]
 
     def on_release(self):
-        Clock.schedule_once(lambda x: RM.detailsPressed(instance=self, id=self.id, focus=RM.msg[18]), 0)
+        #Clock.schedule_once(lambda x: RM.detailsPressed(instance=self, id=self.id, focus=RM.msg[18]), 0)
+        Clock.schedule_once(lambda x: RM.detailsPressed(instance=self, id=self.id, focus=False), 0)
 
 class RecordButton(Button):
     """ Кнопка с записью посещения на экране квартиры """
@@ -2745,9 +2759,6 @@ class RecordButton(Button):
         width = RM.mainList.width if not RM.horizontal else RM.mainList.width / 2
         self.text_size = width * self.ratio, None
         self.texture_update()
-        if RM.settings[0][15]:
-            limit = RM.mainList.height * .45
-            if self.size[1] > limit: self.text_size[1] = limit
 
     def on_release(self):
         RM.scrollClick(instance=RM.btn[self.id], delay=True)
@@ -2774,7 +2785,7 @@ class Counter(AnchorLayout):
                         width=RM.standardTextWidth * 2.6 if width is None else width,
                         height=RM.standardTextHeight * (2.6 if not RM.horizontal else 2))
 
-        self.input = MyTextInput(id="regular" if picker is None else "hours", text=text, disabled=disabled,
+        self.input = MyTextInput(id="number" if picker is None else "hours", text=text, disabled=disabled,
                                  multiline=False, halign="center", time=True if picker is not None else False,
                                  softinput_mode="below_target", size_hint=(1, None), input_type="number")
 
@@ -2893,7 +2904,6 @@ class MainMenuButton(TouchRippleBehavior, Button):
     def __init__(self, text, **kwargs):
         super(MainMenuButton, self).__init__()
         self.markup = True
-        #self.height = 0
         self.lastTouch = None
         if not RM.desktop:
             self.iconFont = int(RM.fontL)
@@ -3136,10 +3146,6 @@ class DatePicker(BoxLayout):
 
 class RMApp(App):
 
-    if platform == "android": # определение высоты системных панелей
-        statusbar_height = NumericProperty(get_statusbar_height())
-        navbar_height = NumericProperty(get_navbar_height())
-
     def build(self):
         self.interface = AnchorLayout(anchor_y="top")
         return self.interface
@@ -3226,12 +3232,13 @@ class RMApp(App):
         self.tableSizeHintY = .09  # ширина полосы верхних табличных кнопок
         self.bottomButtonsSizeHintY = .095  # .12 # ширина полосы центральной кнопки
         # временно отключили 000 - эта команда ни на что не влияет
-        self.mainButtonsSizeHintY = .09
+        self.mainButtonsSizeHintY = .09 if not self.settings[0][28] or self.desktop else .2
         # ширина полосы 3 главных кнопок
         self.descrColWidth = .38  # ширина левого столбца таблицы (подписи полей), но кроме настроек
         self.spacing = self.thickness()[0] * 2
         self.padding = self.thickness()[0] * 2.5
-        self.textEnterMode = "text" if self.settings[0][27] else "null" # null = отключение автозавершения клавиатуры
+        self.textEnterMode = "text" if platform != "android" or self.settings[0][27] \
+            else "null" # null = отключение автозавершения клавиатуры на Андроид при соответствующей настройке
         self.emoji = {"check": "\u2611"}  # галочка для отчета
         if self.settings[0][21] != "Google" and self.settings[0][21] != "Yandex" and self.settings[0][21] != "Яндекс"\
                 and self.settings[0][21] != "2GIS" and self.settings[0][21] != "2ГИС":
@@ -3243,8 +3250,14 @@ class RMApp(App):
             "2ГИС" if self.language == "ru" or self.language == "uk" else "2GIS"
         ]
 
-        if not softRestart: # при запуске setParameters по умолчанию все, что ниже, перезагружается;
-                            # при мягком рестарте – сохраняется
+        if platform == "android":
+            set_edge_to_edge_manually()
+            set_on_apply_window_insets_listener(self.on_apply_window_insets)
+            request_apply_insets()
+        else:
+            self.navbar_height = 0
+
+        if not softRestart: # все, что ниже, выполняется только один раз при запуске программы:
             self.contactsEntryPoint = self.searchEntryPoint = self.popupEntryPoint = 0 # вход в разные списки
             self.rep = Report()
             self.stack = []
@@ -3418,7 +3431,6 @@ class RMApp(App):
 
             elif self.theme == "purple":  # Пурпур
                 self.globalBGColor = [.94, .94, .94, 0]
-                #if platform == "android": navbar_color("#f1eff0", "black")
                 self.mainMenuButtonColor = [.31, .31, .31, 1]
                 self.mainMenuButtonBackgroundColor = [0.55, 0.55, 0.55, .25]
                 self.roundButtonColorPressed[1] -= 0.02
@@ -3445,7 +3457,6 @@ class RMApp(App):
                 self.roundButtonColorPressed[2] += 0.04
 
             elif self.theme == "green":  # Эко
-                #if platform == "android": navbar_color("#33615b", "black")
                 self.titleColor = self.mainMenuActivated = [.09, .65, .58, 1]
                 self.pageTitleColor = [.1, .44, .5, 1]
                 self.scrollIconColor = [self.titleColor[0] * ck, self.titleColor[1] * ck, self.titleColor[2] * ck, .7]
@@ -3553,7 +3564,7 @@ class RMApp(App):
                                       "tab_background_3d.png" if self.desktop else "tab_background_3d_mob.png"]
 
             self.tableColor = self.tabColors[0] = [self.linkColor[0], self.linkColor[1], self.linkColor[2], .85]
-            if self.theme == "purple": self.titleColorOnBlack = [.76, .65, .89]
+            if self.theme == "purple": self.titleColorOnBlack = [.5, .38, .67]
             elif self.theme == "gray": self.titleColorOnBlack = [.63, .78, .99]
             else: self.titleColorOnBlack = [self.titleColor[0], self.titleColor[1], self.titleColor[2]]
 
@@ -4056,8 +4067,7 @@ class RMApp(App):
                     self.flatSizeInGrid = int(self.fontS * self.fScale1_2)
                 self.flatButtonRadius = \
                     [0 if self.theme == "3D" else (Window.size[0] * Window.size[1]) / (Window.size[0] * rad), ]
-                self.flatButtonColor3Radius = [
-                    self.flatButtonRadius[0] * .5,]#0, 0, self.flatButtonRadius[0]*.7, 0] # закругление углов цветного квадратика на сетке
+                self.flatButtonColor3Radius = [self.flatButtonRadius[0] * .5,] # закругление углов цветного квадратика на сетке
                 floorFontSize = int(self.fontS * (1 if self.desktop else .8) * self.fScale1_4)
 
                 if self.porch.floorview is None: # первичная генерация сетки (долгая)
@@ -4120,7 +4130,6 @@ class RMApp(App):
                     if len(footer) > 0: self.scrollRadius = [rad, rad, 0, 0]
                 elif form == "houseView":
                     due = self.house.due()
-                    #if len(footer) > 0: self.scrollRadius = [rad, rad, 0, 0]
                     if due and self.dueWarnMessageShow:
                         self.mainList.add_widget(self.tip(icon="warn"))
                 elif form == "porchView":
@@ -4155,7 +4164,6 @@ class RMApp(App):
                 self.flatButtonRadius = [0 if self.theme == "3D" else \
                                              (Window.size[0] * Window.size[1]) / (Window.size[0] * 170), ]
                 self.flatButtonColor3Radius = [ # закругление углов цветного квадратика на списке
-                    #0, 0, 0 if self.desktop else self.flatButtonRadius[0] * .5, 0]
                     0 if self.desktop else self.flatButtonRadius[0] * .5,]
 
                 # Запись "создайте дом(а)" для пустого сегмента
@@ -4271,9 +4279,7 @@ class RMApp(App):
                                     for b in range(len(footer[i])):
                                         if form == "ter" and self.fScale <= 1: limit = 5
                                         elif form == "ter": limit = 3
-                                        #elif form == "houseView": limit = 1
                                         else: limit = len(footer[i])-1
-                                        #if limit == 1: self.footerRadius = [0, 0, rad * 1.1, rad * 1.1]
                                         if count == 0: self.footerRadius = [0, 0, 0, rad * 1.1]
                                         elif count < limit: self.footerRadius = [0, 0, 0, 0]
                                         else: self.footerRadius = [0, 0, rad * 1.1, 0]
@@ -4947,7 +4953,7 @@ class RMApp(App):
                     webbrowser.open(f"https://yandex.ru/maps/?mode=search&text={self.dest}")
                 elif self.settings[0][21] == "2GIS" or self.settings[0][21] == "2ГИС":
                     webbrowser.open(f"https://2gis.ru/search/{self.dest}")
-                else:#elif self.settings[0][21] == "Google":
+                else:
                     webbrowser.open(f"http://maps.google.com/?q={self.dest}")
 
     def positivePressed(self, instance=None, instant=False, value=None, default=""):
@@ -4962,7 +4968,7 @@ class RMApp(App):
 
                 # Недокументированные поисковые запросы:
 
-                if input == "000" and platform == "android": # опускание нижней части экрана
+                if 0:#input == "000": # подъем нижней части экрана (то же, что Raise interface)
                     if self.settings[0][28] != 1:
                         self.settings[0][28] = 1
                     else:
@@ -5057,6 +5063,7 @@ class RMApp(App):
                                                                              halign=align, valign=align))  # с
                     a1 = AnchorLayout(anchor_x="center", anchor_y="center")
                     self.flatRangeStart = MyTextInput(text=firstflat, multiline=False, font_size=self.standardFont,
+                                                      softinput_mode="below_target",
                                                       size_hint_y=1, halign="center", input_type="number")
                     a1.add_widget(self.flatRangeStart)
                     flatsRangeForm.add_widget(a1)
@@ -5064,6 +5071,7 @@ class RMApp(App):
                         MyLabel(text=self.msg[60], size_hint_x=None, halign=align, valign=align))  # по
                     a2 = AnchorLayout(anchor_x="left", anchor_y="center")
                     self.flatRangeEnd = MyTextInput(text=lastflat, multiline=False, font_size=self.standardFont,
+                                                    softinput_mode="below_target",
                                                     size_hint_y=1, halign="center", input_type="number")
                     a2.add_widget(self.flatRangeEnd)
                     flatsRangeForm.add_widget(a2)
@@ -5096,11 +5104,13 @@ class RMApp(App):
                             self.textbox.remove_widget(self.inputBoxEntry)
                             self.inputBoxEntry = MyTextInput(text=filled, multiline=self.multiline,
                                                              height=self.standardTextHeight*1.3,
+                                                             softinput_mode="below_target",
                                                              rounded=True, size_hint_x=Window.size[0]/2,
                                                              size_hint_y=None, pos_hint=self.pos_hint, input_type="number")
                             self.textbox.add_widget(self.inputBoxEntry)
                             self.inputBoxEntry2 = MyTextInput(multiline=self.multiline,
                                                               height=self.standardTextHeight * 1.3,
+                                                              softinput_mode="below_target",
                                                               input_type="number", size_hint_x=Window.size[0]/2,
                                                               rounded=True, size_hint_y=None, pos_hint=self.pos_hint)
                             self.inputBoxEntry.halign = self.inputBoxEntry2.halign ="center"
@@ -5336,10 +5346,6 @@ class RMApp(App):
                 self.resources[1][len(self.resources[1]) - 1].addPorch(input="", type="virtual")
                 self.resources[1][len(self.resources[1]) - 1].porches[0].addFlat(name, virtual=True)
                 self.resources[1][len(self.resources[1]) - 1].porches[0].flats[0].status = "1"
-                #newCon = self.resources[1][len(self.resources[1]) - 1].porches[0].flats[0]
-                #print(newCon.getName())
-                #last = len(self.resources[1])-1
-                #print(self.resources[1][last].date)
                 self.save()
                 self.conPressed(instance=instance)
 
@@ -5752,7 +5758,8 @@ class RMApp(App):
                 btn[0].bind(on_release=__dismissSurvey)
                 btn[2].bind(on_release=__dismissSurvey)
                 def __enterRequirement(instance):
-                    self.createInputBox(message=f"{self.msg[342]}{self.col}", input_type="number", focus=True)
+                    self.createInputBox(message=f"{self.msg[342]}{self.col}", input_type="number",
+                                        softinput_mode="", focus=True)
                 btn[1].bind(on_release=__enterRequirement)
                 self.mainList.add_widget(anc)
 
@@ -5942,10 +5949,9 @@ class RMApp(App):
                     "{}" + self.msg[336] if not self.desktop else None, # экспорт при остановке таймера
                     "{}" + self.msg[17],  # компактный вид участков и контактов
                     "{}" + self.msg[346], # цветной квадратик в квартире
-                    "{}" + self.msg[188], # ограничение высоты записи посещения
-                    "{}" + (self.msg[87] if not self.desktop else self.msg[164]), # новое предложение с заглавной / запоминать положение окна
-                    "{}" + self.msg[347] if platform == "android" else None,
-                    "{}" + "Gesture mode" if platform == "android" else None
+                    "{}" + (self.msg[87] if platform == "android" else self.msg[164]), # новое предложение с заглавной / запоминать положение окна
+                    "{}" + self.msg[347] if platform == "android" else None, # автоисправление клавиатуры
+                    #"{}" + "Raise interface" if platform == "android" else None
 
                 ],
                 defaults=[
@@ -5965,17 +5971,17 @@ class RMApp(App):
                     self.settings[0][17], # экспорт при остановке таймера
                     self.settings[0][25], # компактный вид участков и контактов
                     self.settings[0][26], # цветной квадратик в квартире
-                    self.settings[0][15], # ограничение высоты записи посещения
-                    self.settings[0][11] if not self.desktop else self.settings[0][12], # новое предложение с заглавной / запоминать положение окна
-                    self.settings[0][27] if not self.desktop else None, # автозавершение клавиатуры (по умолчанию отключено начиная с версии 2.17.007)
-                    self.settings[0][28], # gesture mode
+                    self.settings[0][11] if platform == "android" else self.settings[0][12], # новое предложение с заглавной / запоминать положение окна
+                    self.settings[0][27] if platform == "android" else None, # автоисправление клавиатуры (по умолчанию отключено начиная с версии 2.17.007)
+                    #self.settings[0][28], # raise interface
                 ],
-                multilines=[False, False, False, False, False, False, False, False, False, False, False,
-                            False, False, False, False, False, False, False, False, False, False]
+                multilines=[False, False, False, False, False, False, False, False, False,
+                            False, False, False, False, False, False, False, False, False]
             )
 
-            """ Свободные настройки:         
+            """ Свободные настройки:
             self.settings[0][23]
+            self.settings[0][28]
             self.settings[0][29]
             self.settings[0][30]
             self.settings[0][31]
@@ -6030,13 +6036,13 @@ class RMApp(App):
             else:
                 openFile = RetroButton(text=f"{self.button['open']}\n{self.msg[134]}", size_hint_y=size_hint_y)
             def __open(instance):
-                if self.desktop:
+                if platform == "android":
+                    Chooser(self.chooser_callback).choose_content()
+                elif self.desktop:
                     from tkinter import filedialog
                     file = filedialog.askopenfilename()
                     if file != "" and len(file) > 0:
                         self.importDB(file=file)
-                elif platform == "android" or platform == "ios":
-                    Chooser(self.chooser_callback).choose_content()
             openFile.bind(on_release=__open)
             g.add_widget(MyLabelAligned(text=self.msg[317], valign="center", halign="center", padding=padding2,
                                  font_size=int(self.fontXS * self.fontScale(cap=cap))))
@@ -6169,7 +6175,7 @@ class RMApp(App):
             multiline=False,
             positive=f"{self.button['search2']} [b]{self.msg[148]}[/b]",
             details="",
-            tip=self.msg[323]
+            tip=self.msg[339]
         )
 
         self.stack.insert(0, self.disp.form)
@@ -6384,7 +6390,7 @@ class RMApp(App):
                 self.scrollWidget.clear_widgets()
                 self.firstCallPopup = False
                 self.createMultipleInputBox(
-                    title=f"{self.flatTitle} {self.button['arrow']} {self.msg[162]}",
+                    title=self.flatTitle,
                     options=[self.msg[22], self.msg[125]],
                     defaults=[self.flat.getName(), ""],
                     multilines=[False, True],
@@ -6395,7 +6401,6 @@ class RMApp(App):
                                    not self.popupEntryPoint else self.button["create"],
                     nav=nav,
                     sort="",
-                    #softinput_mode="pan",
                     note=note
                 )
             else:
@@ -6403,11 +6408,15 @@ class RMApp(App):
 
             # Кнопки первичного цвета (статуса)
 
+            self.flatViewFirstShow = False
             if self.house.type != "virtual" and not self.contactsEntryPoint and not self.popupEntryPoint:
-                if not self.resources[0][1][7] and len(self.flat.records) == 0 and instance is not None: # показываем подсказку о первом посещении
+                if not self.resources[0][1][7] and instance is not None: # показываем подсказку о первом посещении
+                    self.flatViewFirstShow = True
                     self.popup(title=self.msg[247], message=self.msg[228])
                     self.mainList.add_widget(self.tip(icon="info", text=self.msg[106], k=.7, halign="center",
                                                       valign="bottom", hint_y=.15))
+                else: # ставим пустую заглушку для поддержания такого же формата
+                    self.mainList.add_widget(self.tip(icon="", k=.7, halign="center", valign="bottom", hint_y=.15))
                 self.activateColorButton()
                 self.colorBox = BoxLayout(size_hint=(1, .163), spacing=self.spacing*2, padding=self.padding*2)
                 self.colorBox.add_widget(self.colorBtn[0])
@@ -6427,10 +6436,11 @@ class RMApp(App):
             # Круглые кнопки слева (снизу вверх)
 
             k000 = .35
-            pos = [self.padding*2 if not self.horizontal else self.horizontalOffset + self.padding*2,
-                   self.mainList.size[1] * k000 - (0 if not self.horizontal else Window.size[1] * .06)]
-
-            if platform == "android" and self.settings[0][28] != 1: pos[1] += self.navbar_height
+            pos = [
+                self.padding*2 if not self.horizontal else self.horizontalOffset + self.padding*2,
+                self.mainList.size[1] * k000 - (0 if not self.horizontal else Window.size[1] * .06) \
+                + (self.navbar_height if platform == "android" else 0)
+            ]
 
             if len(self.flat.records) == 0: pos[1] *= .75
 
@@ -6539,7 +6549,8 @@ class RMApp(App):
 
     def createInputBox(self, title="", form=None, message="", default="", hint="", checkbox=None, handleCheckbox=None,
                        active=True, positive=None, sort=None, details=None, neutral=None, input_type=None,
-                       multiline=False, tip=None, embed=None, embed2=None, limit=99999, focus=False, bin=False):
+                       softinput_mode="below_target", multiline=False, tip=None, embed=None, embed2=None, limit=99999,
+                       focus=False, bin=False):
         """ Форма ввода данных с одним полем """
         if len(self.stack) > 0: self.stack.insert(0, self.stack[0])
         if form is None: form = self.mainList
@@ -6585,7 +6596,7 @@ class RMApp(App):
                                          height=self.standardTextHeight*1.3, input_type=input_type,
                                          font_size=(self.fontS*self.fScale) if multiline else None,
                                          halign="left" if multiline else "center",
-                                         softinput_mode="below_target",
+                                         softinput_mode=softinput_mode,
                                          rounded=True if not multiline else False, text=default)
         textbox.add_widget(self.inputBoxEntry)
         grid.add_widget(textbox)
@@ -6759,10 +6770,12 @@ class RMApp(App):
                     MyTextInput(
                         id=str(options[row]), limit=limit, multiline=multiline,
                         focus=True if focus == self.multipleBoxLabels[row].text else False,
+                        softinput_mode=softinput_mode,
+                        pos_hint = {"center_y": .5}, #{"top": 1}
                         onlyPadding=True if self.desktop or ("Details" in self.disp.form and self.fScale <= 1) else False,
                         text=str(default) if default != "virtual" else "", halign=halign, height=height,
                         size_hint_x=1, input_type=input_type, disabled=disable,
-                        softinput_mode=softinput_mode, size_hint_y=None if settings else entrySize_hint[1]
+                        size_hint_y=None if settings else entrySize_hint[1]
                     )
                 )
             else:
@@ -7035,7 +7048,7 @@ class RMApp(App):
                 self.dropThemeMenu.select(instance.text)
                 self.settings[0][5] = self.themes[instance.text]
                 self.save()
-                self.restart("hard" if platform == "android" else "soft")
+                self.restart("soft")
                 self.updateSettings(scrollTo = self.msg[168])
             btn.bind(on_release=__saveTheme)
             self.dropThemeMenu.add_widget(btn)
@@ -7163,6 +7176,8 @@ class RMApp(App):
             color = get_hex_from_color(self.linkColor)
             size_hint_y = hint_y if hint_y is not None else 1
             text = f"[u][color={color}][ref=link]{text}[/ref][/color][/u]"
+        elif icon == "": # пустая ссылка
+            size_hint_y = hint_y if hint_y is not None else 1
 
         if text == "" and icon != "warn": # если получен пустой текст, вместо подсказки ставим пустой виджет
             tip = Widget(size_hint_y=size_hint_y)
@@ -7183,6 +7198,9 @@ class RMApp(App):
             tip = MyLabelAligned(text=f"[ref=note][color={color}]{self.button[icon]}[/color] {text}[/ref]",
                           size_hint_y=size_hint_y, padding=[self.padding*8, 0],
                           font_size=font_size, markup=True, halign=halign, valign=valign)
+        elif icon == "":
+            tip = MyLabelAligned(text="", size_hint_y=size_hint_y, padding=[self.padding*8, 0],
+                                 font_size=font_size, markup=True, halign=halign, valign=valign)
         if func is not None:
             if icon == "link": tip.bind(on_ref_press=func)
             else: tip.bind(on_release=func)
@@ -7255,7 +7273,7 @@ class RMApp(App):
             phoneBox = RelativeLayout(size_hint=(.94, None), height=self.standardTextHeight*1.2, pos_hint=PH)
             self.quickPhone = MyTextInputPopup(id="quickPhone", onlyPadding=True, hint_text=self.msg[35],
                                                text=self.flat.phone, multiline=False, wired_border=True,
-                                               focus=True if self.desktop else False,
+                                               softinput_mode="below_target", focus=True if self.desktop else False,
                                                input_type="number" if not self.desktop else self.textEnterMode)
             phoneBox.add_widget(self.quickPhone)
             self.savePhoneBtn = ButtonInsideText(text=self.button["check"], pos_hint={"right": 1, "center_y": .5},
@@ -7390,15 +7408,12 @@ class RMApp(App):
         self.buttonClose.bind(on_release=self.dismissTopPopup)
         c2box.add_widget(self.buttonClose)
         side = self.mainList.size[0 if not self.horizontal else 1] * .77
-        #horizontal = True if Window.size[0] <= Window.size[1] * .5 else False
-        #side = self.mainList.size[0 if not horizontal else 1] * .77
-        #if self.desktop and Window.size[0] <= Window.size[1] * .8: vq = 0#side *= .9
-        #if self.horizontal: side *= .8
+
         self.popups.insert(
             0,
             MyPopup(
                 title=None, alpha=.95 if self.theme != "3D" else 1, auto_dismiss=True, content=contentMain,
-                size_hint=[None, None], size=[side, side * (1.3 if self.settings[0][13] else 1.05) + vq],
+                size_hint=[None, None], size=[side, side * 1.3 + vq],
                 button=instance, anim=0,
                 embed = MyLabelAligned(
                     text=f"[b]{self.flat.number}[/b]", height=0, valign="top", halign="left", size_hint_y=None,
@@ -7574,6 +7589,11 @@ class RMApp(App):
         return contacts
 
     # Различная визуализация
+
+    def on_apply_window_insets(self, insets):
+        """ Определение высоты навигационной панели и выставление верхнего и нижнего отступа"""
+        self.interface.padding = insets.left, insets.top, insets.right, insets.bottom
+        self.navbar_height = insets.bottom
 
     def getColorForStatus(self, status=""):
         """ Возвращает цвет по полученному символу статуса """
@@ -8086,12 +8106,14 @@ class RMApp(App):
             self.houseView(instance=instance)
 
     def confirmNonSave(self, instance):
-        """ Проверяет, есть ли несохраненные данные в форме первого посещения """
+        """ Проверяет, есть ли несохраненные данные в форме первого посещения
+        Возвращает True, если есть
+        """
         if (instance is not None and "Button" in str(instance) and self.msg[55] in instance.text) or \
                 (instance is not None and "MyTextInput" in str(instance)):
             return False # для предотвращения ложных срабатываний в разделе контактов
         try:
-            if self.disp.form != "flatView" or self.msg[162] not in self.pageTitle.text:
+            if self.disp.form != "flatView" or len(self.flat.records) > 0:
                 return False
             len(self.multipleBoxEntries) # для генерации ошибки
         except: return False
@@ -8114,7 +8136,7 @@ class RMApp(App):
                     cache = SharedStorage().get_cache_dir()
                     if cache and os.path.exists(cache): shutil.rmtree(cache)
                 self.rep = Report()
-                self.restart("soft")
+                self.restart("hard" if platform == "android" else "soft")
                 self.terPressed()
 
         elif self.popupForm == "restoreRequest":
@@ -8439,7 +8461,7 @@ class RMApp(App):
             bBox.add_widget(btnSave)
             contentMain.add_widget(bBox)
             text = MyTextInput(hint_text=self.msg[185] if self.house.type == "condo" else self.msg[309],
-                               popup=True, multiline=True, shrink=False)
+                               softinput_mode="below_target", popup=True, multiline=True, shrink=False)
             contentMain.add_widget(text)
             if self.theme != "3D":
                 btnPaste = PopupButton(text=f"{icon('icon-paste')} {self.msg[186]}",    size=(width, bBox.height))
@@ -8564,20 +8586,27 @@ class RMApp(App):
 
         elif self.popupForm == "timerOff":
             self.popupForm = ""
-            size_hint = (.93, .4 * self.fontScale(cap=1.2)) if not self.horizontal else (.6, .6)
+            size_hint = [.93, .4 * self.fontScale(cap=1.2)] if not self.horizontal else [.6, .6]
             size = int(self.fontXXL * 1.3)
             contentMain = BoxLayout(orientation="vertical")
             a1 = AnchorLayout(size_hint_y=.2, anchor_x="center", anchor_y="center")
             contentMain.add_widget(a1)
             contentMain.add_widget(Widget(size_hint_y=None, height=self.standardTextHeight))
             tag = MyTextInput(id="serviceTag", text=self.serviceTag, hint_text=RM.msg[329], multiline=False,
-                              input_type=self.textEnterMode, popup=True, size_hint_y=None)
+                              softinput_mode="below_target", input_type=self.textEnterMode, popup=True, size_hint_y=None)
             a1.add_widget(tag)
-            grid = GridLayout(rows=1, cols=3, size_hint_y=.6, padding=self.padding, spacing=self.spacing)
+            grid = GridLayout(size_hint_y=.6, padding=self.padding, spacing=self.spacing)
+            if not self.settings[0][2]:
+                grid.rows = 1
+                grid.cols = 3
+            else:
+                grid.rows = 2
+                grid.cols = 2
+                size_hint[1] *= (1.2 if self.horizontal else 1.4) # если есть кредит, увеличиваем окно таймера
+
             contentMain.add_widget(grid)
 
-            button = RM.msg[324].replace("#", "\n")
-
+            button = RM.msg[324].replace("#", "\n") # кнопка паузы таймера
             if self.theme != "3D":
                 btn1 = PopupButton(text=f"[size={size}]{icon('icon-pause-circle')}[/size]\n\n{button}",
                                 size_hint_y=1, cap=False)
@@ -8593,8 +8622,7 @@ class RMApp(App):
                 self.dismissTopPopup()
             btn1.bind(on_release=__pauseTimer)
 
-            button = RM.msg[325].replace("#", "\n")
-
+            button = RM.msg[325].replace("#", "\n") # кнопка остановки таймера с обычным временем
             if self.theme != "3D":
                 btn2 = PopupButton(text=f"[size={size}]{icon('icon-stop-circle')}[/size]\n\n{button}",
                                    size_hint_y=1, cap=False)
@@ -8610,7 +8638,7 @@ class RMApp(App):
                 self.dismissTopPopup()
             btn2.bind(on_release=__stopHours)
 
-            if self.settings[0][2]:
+            if self.settings[0][2]: # если есть кредит - остановка таймера с кредитом
                 button = RM.msg[326].replace("#", "\n")
                 if self.theme != "3D":
                     btn3 = PopupButton(text=f"[size={size}]{icon('icon-stop-circle')}[/size]\n\n{button}",
@@ -8626,6 +8654,21 @@ class RMApp(App):
                     elif self.disp.form == "log": self.logPressed()
                     self.dismissTopPopup()
                 btn3.bind(on_release=__stopCredit)
+
+            button = RM.msg[323].replace("#", "\n") # кнопка отмены таймера
+            if self.theme != "3D":
+                btn4 = PopupButton(text=f"[size={size}]{icon('icon-ban')}[/size]\n\n{button}",
+                                   size_hint_y=1, cap=False)
+            else:
+                btn4 = RetroButton(text=f"[size={size}]{icon('icon-ban')}[/size]\n\n{button}",
+                                   size_hint_y=1)
+            grid.add_widget(btn4)
+            def __cancelTimer(instance):
+                self.rep.modify("x")
+                if self.disp.form == "rep": self.repPressed()
+                elif self.disp.form == "log": self.logPressed()
+                self.dismissTopPopup()
+            btn4.bind(on_release=__cancelTimer)
 
             box = BoxLayout(size_hint_y=.2) # отмена
             self.confirmButtonPositive = PopupButton(text=options[0])
@@ -8946,13 +8989,8 @@ class RMApp(App):
             self.setTheme()
             self.createInterface()
             self.terPressed(progress=True, restart=True)
-            if platform == "android":
-                set_edge_to_edge()
-                self.interface.padding = [0, self.statusbar_height, 0,
-                                          0 if self.settings[0][28] == 1 else self.navbar_height]
-                # если скрытая настройка 28 активирована (1), опускаем нижний край экрана
             Clock.schedule_interval(lambda x: self.save(backup=True), 1800)  # резервирование каждые 30 мин.
-        Clock.schedule_once(__start, 0)#.01)
+        Clock.schedule_once(__start, 0)
 
     def on_pause(self):
         """ На паузе приложения """
@@ -8963,8 +9001,10 @@ class RMApp(App):
 
     def on_resume(self):
         """ Возобновление с паузы """
-        if platform == "android": set_edge_to_edge()
-            #self.interface.padding = 0, self.statusbar_height, 0, self.navbar_height
+        if platform == "android":
+            set_edge_to_edge_manually()
+            set_on_apply_window_insets_listener(self.on_apply_window_insets)
+            request_apply_insets()
 
     def noDataFileActions(self):
         """ Выполнение каких-то действий в зависимости от наличия файла данных """
@@ -8989,15 +9029,16 @@ class RMApp(App):
             self.setTheme()
             self.showProgress(icon=self.button["spinner1"])
             self.terPressed(progress=True, restart=True, draw=False)
-            if platform == "android": set_edge_to_edge()
         else: # полная перезагрузка приложения            
             if platform == "android":
                 restart_app()
             else:
                 self.stop()
-            if self.desktop:
-                from os import startfile
-                startfile("main.py")
+                if platform == "win":
+                    os.startfile("main.py")
+                else:
+                    from subprocess import run
+                    run([executable, "main.py"])
 
     def on_orientation_change(self):
         """ Смена ориентации экрана в настольной версии """
@@ -9013,10 +9054,14 @@ class RMApp(App):
         """ Пытаемся определить, светлая или темная тема на устройстве (темная возвращает True) """
         if platform == "android":
             try:
+                from kvdroid.tools.darkmode import dark_mode
+                return dark_mode()
+                """
+                # Альтернативный метод:
                 Configuration = autoclass('android.content.res.Configuration')
                 config = activity.getResources().getConfiguration()
                 ui_mode = config.uiMode & Configuration.UI_MODE_NIGHT_MASK
-                return ui_mode == Configuration.UI_MODE_NIGHT_YES
+                return ui_mode == Configuration.UI_MODE_NIGHT_YES"""
             except:
                 return False
         else:
@@ -9067,7 +9112,7 @@ class RMApp(App):
         """ Возвращает исходные значения houses, settings, resources """
         return [], \
                [
-                   [1, 5, 0, 0, "и", "", "", None, 5, 0, 1, 1, 1, 1, 50, 1, 0, "", "0", "д", 1, "sepia", 1, 0, 0, None, 0, None, None, None, None, None, None], # program settings
+                   [1, 5, 0, 0, "и", "", "", None, 5, 0, 1, 1, 1, 1, 50, 0, 0, "", "0", "д", 1, "sepia", 1, 0, 0, None, 0, None, None, None, None, None, None], # program settings
                    Version, # текущая версия приложения начиная с версии 2.17 - settings[1]
 
                    [0.0, # [0] hours                                settings[2][0…]
@@ -9556,7 +9601,6 @@ class RMApp(App):
                 if not silent: self.popup(message=self.msg[255])
             else:
                 if not silent: self.popup(message=self.msg[256] % path)
-
 
 RM = RMApp()
 
