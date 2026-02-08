@@ -29,7 +29,7 @@ source.exclude_dirs = temp, tests, bin, dist, .vscode, .venv, __pycache__, .gith
 source.exclude_patterns = app_copy.zip, buildozer.spec, poetry.lock, pyproject.toml
 
 # (str) Application versioning (method 1)
-version = 2.17.010
+version = 2.17.011
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -289,9 +289,12 @@ android.enable_androidx = True
 #android.archs = arm64-v8a
 android.archs = arm64-v8a, armeabi-v7a
 
+# MANUAL: hint from AI to solve back button issue on Android 16
+android.manifest.attributes = android:enableOnBackInvokedCallback = "true"
+
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
-android.numeric_version = 102120217
+android.numeric_version = 102120221
 
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True

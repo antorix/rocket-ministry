@@ -1,12 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-Version = "2.17.010"
-Subversion = "RC3"
+Version = "2.17.011"
+Subversion = "RC4"
 
 """
 НОВОЕ В ВЕРСИИ:
-* Кнопка отмены времени на таймере.
 * Исправления и оптимизации.
 """
 
@@ -24,7 +23,6 @@ if platform == "android":
     from kvdroid.tools.display import set_edge_to_edge_manually
     from kvdroid.tools import navbar_color
     navbar_color("#000000", "black")
-    from kvdroid.jinterface.view import Insets
     from kvdroid.tools.display import set_on_apply_window_insets_listener, request_apply_insets
     from kvdroid.tools import restart_app
     from kvdroid.tools import keyboard_height
@@ -81,6 +79,7 @@ else:
             check_call([executable, '-m', 'pip', 'install', 'python-dateutil'])
 
 from kivy.app import App
+from kivy.config import Config
 from kivy.uix.behaviors import DragBehavior
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.behaviors.touchripple import TouchRippleBehavior
@@ -92,7 +91,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.bubble import Bubble
-from kivy.properties import ObjectProperty, NumericProperty
+from kivy.properties import ObjectProperty
 from kivy.graphics import PushMatrix, PopMatrix, Callback
 from kivy.graphics import Color, SmoothRoundedRectangle
 from kivy.graphics.context_instructions import Transform
@@ -1491,10 +1490,12 @@ class MyTextInput(TextInput):
         if value: # фокус
             kbMinHeight = Window.size[1]/10
             if not RM.desktop:
-                if RM.msg[125] in self.id and not RM.flatViewFirstShow and RM.settings[0][15] > kbMinHeight: # "Детали посещения"
+                if RM.msg[125] in self.id and not RM.flatViewFirstShow and RM.settings[0][15] > kbMinHeight \
+                    and len(RM.colorBtn) > 0:
+                    # "Детали посещения" - поднимаем экран с урезанием некоторых элементов
                     Window.softinput_mode = ""
                     RM.globalFrame.remove_widget(RM.boxFooter)
-                    RM.globalFrame.padding[3] = RM.settings[0][15] + RM.colorBtn[0].height + RM.padding
+                    RM.globalFrame.padding[3] = RM.settings[0][15] + RM.colorBtn[0].height + RM.padding * 4
 
                 # Обновляем высоту клавиатуры через полсекунды после открытия, но только если она больше kbMinHeight
                 def __go(*args):
@@ -1509,7 +1510,7 @@ class MyTextInput(TextInput):
                 Window.softinput_mode = self.softinput_mode
                 RM.globalFrame.padding[3] = 0
 
-            if self.id == "number": # числовой счетчик: изучения, квартиры и т .д.
+            if self.id == "number": # числовой счетчик: изучения, квартиры и т. д.
                 if self.text.strip() == "":
                     self.text = "0"
                 if RM.disp.form == "rep" and self == RM.studies.input and \
@@ -1777,7 +1778,7 @@ class TopButton(Button):
         self.background_down = ""
 
 class EllipsisButton(Button):
-    """ Кнопка с тремя точками либо пустая заглушка - определяется через id"""
+    """ Кнопка с тремя точками либо пустая заглушка - определяется через id """
     def __init__(self, id, hy=None, *args, **kwargs):
         super(EllipsisButton, self).__init__()
         self.id = id
@@ -3298,7 +3299,6 @@ class RMApp(App):
             # Действия в зависимости от платформы
 
             if self.desktop:
-                from kivy.config import Config
                 Config.set('input', 'mouse', 'mouse, disable_multitouch')
                 Config.write()
                 self.title = 'Rocket Ministry'
@@ -3322,6 +3322,7 @@ class RMApp(App):
                     self.checkOrientation(width=args[0].size[0], height=args[0].size[1])
                 Window.bind(on_request_close=__close, on_resize=self.checkOrientation)
             elif platform == "android":
+                Config.set('kivy', 'exit_on_escape', '0')
                 try: plyer.orientation.set_portrait()
                 except: pass
 
@@ -8990,6 +8991,7 @@ class RMApp(App):
             self.createInterface()
             self.terPressed(progress=True, restart=True)
             Clock.schedule_interval(lambda x: self.save(backup=True), 1800)  # резервирование каждые 30 мин.
+
         Clock.schedule_once(__start, 0)
 
     def on_pause(self):
@@ -9087,24 +9089,25 @@ class RMApp(App):
 
     def hook_keyboard(self, window, key, *largs):
         """ Обрабатывает кнопку "назад" на мобильных устройствах и Esc на ПК """
-        if key == 27:
-            if len(self.popups) > 0 and self.popups[0].auto_dismiss:
-                self.dismissTopPopup()
-
-            elif not self.backButton.disabled: # если кнопка "назад" активна
-                self.backPressed(instance=self.backButton)
-
-            else: # кнопка "назад" неактивна - какой-то из вариантов остановки приложения:
-                if platform == "android":
-                    if self.disp.form == "ter":
+        try:
+            if key == 27:
+                if self.disp.form == "ter": # мы на странице участков
+                    if platform == "android":
                         self.dismissTopPopup(all=True)
                         self.save()
                         activity.moveTaskToBack(True)
-                elif not self.desktop:
-                    self.save()
-                    self.stop()
+                    elif not self.desktop:
+                        self.save()
+                        self.stop()
 
-            return True
+                elif len(self.popups) > 0 and self.popups[0].auto_dismiss:
+                    self.dismissTopPopup()
+
+                else:#elif not self.backButton.disabled: # если кнопка "назад" активна
+                    self.backPressed(instance=self.backButton)
+        except: pass
+
+        return True
 
     # Работа с базой данных
 
